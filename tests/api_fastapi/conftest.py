@@ -18,13 +18,13 @@ from __future__ import annotations
 
 import datetime
 import os
+from typing import TYPE_CHECKING
 
 import pytest
 from fastapi.testclient import TestClient
 
 from airflow.api_fastapi.app import create_app
-from airflow.auth.managers.simple.simple_auth_manager import SimpleAuthManager
-from airflow.auth.managers.simple.user import SimpleAuthManagerUser
+from airflow.api_fastapi.auth.managers.simple.user import SimpleAuthManagerUser
 from airflow.models import Connection
 from airflow.models.dag_version import DagVersion
 from airflow.models.serialized_dag import SerializedDagModel
@@ -32,6 +32,9 @@ from airflow.providers.standard.operators.empty import EmptyOperator
 
 from tests_common.test_utils.config import conf_vars
 from tests_common.test_utils.db import clear_db_connections, parse_and_sync_to_db
+
+if TYPE_CHECKING:
+    from airflow.api_fastapi.auth.managers.simple.simple_auth_manager import SimpleAuthManager
 
 
 @pytest.fixture
@@ -41,10 +44,11 @@ def test_client():
             (
                 "core",
                 "auth_manager",
-            ): "airflow.auth.managers.simple.simple_auth_manager.SimpleAuthManager",
+            ): "airflow.api_fastapi.auth.managers.simple.simple_auth_manager.SimpleAuthManager",
         }
     ):
-        auth_manager = SimpleAuthManager()
+        app = create_app()
+        auth_manager: SimpleAuthManager = app.state.auth_manager
         # set time_very_before to 2014-01-01 00:00:00 and time_very_after to tomorrow
         # to make the JWT token always valid for all test cases with time_machine
         time_very_before = datetime.datetime(2014, 1, 1, 0, 0, 0)
@@ -57,7 +61,7 @@ def test_client():
                 **auth_manager.serialize_user(SimpleAuthManagerUser(username="test", role="admin")),
             }
         )
-        yield TestClient(create_app(), headers={"Authorization": f"Bearer {token}"})
+        yield TestClient(app, headers={"Authorization": f"Bearer {token}"})
 
 
 @pytest.fixture
@@ -72,14 +76,15 @@ def unauthorized_test_client():
             (
                 "core",
                 "auth_manager",
-            ): "airflow.auth.managers.simple.simple_auth_manager.SimpleAuthManager",
+            ): "airflow.api_fastapi.auth.managers.simple.simple_auth_manager.SimpleAuthManager",
         }
     ):
-        auth_manager = SimpleAuthManager()
+        app = create_app()
+        auth_manager: SimpleAuthManager = app.state.auth_manager
         token = auth_manager._get_token_signer().generate_signed_token(
             auth_manager.serialize_user(SimpleAuthManagerUser(username="dummy", role=None))
         )
-        yield TestClient(create_app(), headers={"Authorization": f"Bearer {token}"})
+        yield TestClient(app, headers={"Authorization": f"Bearer {token}"})
 
 
 @pytest.fixture
@@ -129,7 +134,6 @@ def make_dag_with_multiple_versions(dag_maker, configure_git_connection_for_dag_
     """
 
     dag_id = "dag_with_multiple_versions"
-
     for version_number in range(1, 4):
         with dag_maker(dag_id) as dag:
             for task_number in range(version_number):

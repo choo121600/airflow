@@ -35,14 +35,14 @@
 !docs
 !licenses
 !providers/
-!task_sdk/
+!task-sdk/
 
 # Add those folders to the context so that they are available in the CI container
 !scripts
 
 # Add tests and kubernetes_tests to context.
 !tests
-!tests_common
+!devel-common
 !kubernetes_tests
 !helm_tests
 !docker_tests
@@ -121,6 +121,10 @@ docs/**/_api/**
 **/*.egg-info/
 **/.installed.cfg
 **/*.egg
+
+# But ensure UI dist files are included
+!airflow/ui/dist
+!providers/fab/src/airflow/providers/fab/www/dist
 
 # Exclude temporary vi files
 **/*~
