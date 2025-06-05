@@ -19,6 +19,7 @@ import {
   EventLogService,
   ExtraLinksService,
   GridService,
+  I18NService,
   ImportErrorService,
   JobService,
   LoginService,
@@ -36,6 +37,38 @@ import {
 import { DagRunState, DagWarningType } from "../requests/types.gen";
 import * as Common from "./common";
 
+/**
+ * Get translation file
+ * Return the translation file for the requested language and namespace.
+ *
+ * - lang: Language code (e.g., en, ko, nl, pl, zh-TW)
+ * - ns: Namespace (e.g., common, dashboard, dags, connections)
+ * @param data The data for the request.
+ * @param data.lang
+ * @param data.ns
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const useI18NServiceGetTranslationSuspense = <
+  TData = Common.I18NServiceGetTranslationDefaultResponse,
+  TError = unknown,
+  TQueryKey extends Array<unknown> = unknown[],
+>(
+  {
+    lang,
+    ns,
+  }: {
+    lang: string;
+    ns: string;
+  },
+  queryKey?: TQueryKey,
+  options?: Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn">,
+) =>
+  useSuspenseQuery<TData, TError>({
+    queryKey: Common.UseI18NServiceGetTranslationKeyFn({ lang, ns }, queryKey),
+    queryFn: () => I18NService.getTranslation({ lang, ns }) as TData,
+    ...options,
+  });
 /**
  * Get Assets
  * Get assets.

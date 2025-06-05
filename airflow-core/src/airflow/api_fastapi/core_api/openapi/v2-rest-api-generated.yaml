@@ -7,6 +7,40 @@ info:
     Users should not rely on those but use the public ones instead.
   version: '2'
 paths:
+  /api/v2/i18n/{lang}/{ns}.json:
+    get:
+      tags:
+      - i18n
+      summary: Get translation file
+      description: 'Return the translation file for the requested language and namespace.
+
+
+        - lang: Language code (e.g., en, ko, nl, pl, zh-TW)
+
+        - ns: Namespace (e.g., common, dashboard, dags, connections)'
+      operationId: get_translation
+      parameters:
+      - name: lang
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Lang
+      - name: ns
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Ns
+      responses:
+        '200':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /api/v2/assets:
     get:
       tags:

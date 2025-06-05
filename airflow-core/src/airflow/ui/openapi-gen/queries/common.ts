@@ -20,6 +20,7 @@ import {
   EventLogService,
   ExtraLinksService,
   GridService,
+  I18NService,
   ImportErrorService,
   JobService,
   LoginService,
@@ -36,6 +37,22 @@ import {
 } from "../requests/services.gen";
 import { DagRunState, DagWarningType } from "../requests/types.gen";
 
+export type I18NServiceGetTranslationDefaultResponse = Awaited<ReturnType<typeof I18NService.getTranslation>>;
+export type I18NServiceGetTranslationQueryResult<
+  TData = I18NServiceGetTranslationDefaultResponse,
+  TError = unknown,
+> = UseQueryResult<TData, TError>;
+export const useI18NServiceGetTranslationKey = "I18NServiceGetTranslation";
+export const UseI18NServiceGetTranslationKeyFn = (
+  {
+    lang,
+    ns,
+  }: {
+    lang: string;
+    ns: string;
+  },
+  queryKey?: Array<unknown>,
+) => [useI18NServiceGetTranslationKey, ...(queryKey ?? [{ lang, ns }])];
 export type AssetServiceGetAssetsDefaultResponse = Awaited<ReturnType<typeof AssetService.getAssets>>;
 export type AssetServiceGetAssetsQueryResult<
   TData = AssetServiceGetAssetsDefaultResponse,

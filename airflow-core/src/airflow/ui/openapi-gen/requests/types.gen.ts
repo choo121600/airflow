@@ -1852,6 +1852,13 @@ export type UIAlert = {
 
 export type category = "info" | "warning" | "error";
 
+export type GetTranslationData = {
+  lang: string;
+  ns: string;
+};
+
+export type GetTranslationResponse = unknown;
+
 export type GetAssetsData = {
   dagIds?: Array<string>;
   limit?: number;
@@ -2855,6 +2862,21 @@ export type GridDataData = {
 export type GridDataResponse = GridResponse;
 
 export type $OpenApiTs = {
+  "/api/v2/i18n/{lang}/{ns}.json": {
+    get: {
+      req: GetTranslationData;
+      res: {
+        /**
+         * Successful Response
+         */
+        200: unknown;
+        /**
+         * Validation Error
+         */
+        422: HTTPValidationError;
+      };
+    };
+  };
   "/api/v2/assets": {
     get: {
       req: GetAssetsData;

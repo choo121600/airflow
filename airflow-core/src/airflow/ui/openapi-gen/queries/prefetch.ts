@@ -19,6 +19,7 @@ import {
   EventLogService,
   ExtraLinksService,
   GridService,
+  I18NService,
   ImportErrorService,
   JobService,
   LoginService,
@@ -36,6 +37,32 @@ import {
 import { DagRunState, DagWarningType } from "../requests/types.gen";
 import * as Common from "./common";
 
+/**
+ * Get translation file
+ * Return the translation file for the requested language and namespace.
+ *
+ * - lang: Language code (e.g., en, ko, nl, pl, zh-TW)
+ * - ns: Namespace (e.g., common, dashboard, dags, connections)
+ * @param data The data for the request.
+ * @param data.lang
+ * @param data.ns
+ * @returns unknown Successful Response
+ * @throws ApiError
+ */
+export const prefetchUseI18NServiceGetTranslation = (
+  queryClient: QueryClient,
+  {
+    lang,
+    ns,
+  }: {
+    lang: string;
+    ns: string;
+  },
+) =>
+  queryClient.prefetchQuery({
+    queryKey: Common.UseI18NServiceGetTranslationKeyFn({ lang, ns }),
+    queryFn: () => I18NService.getTranslation({ lang, ns }),
+  });
 /**
  * Get Assets
  * Get assets.

@@ -3,6 +3,8 @@ import type { CancelablePromise } from "./core/CancelablePromise";
 import { OpenAPI } from "./core/OpenAPI";
 import { request as __request } from "./core/request";
 import type {
+  GetTranslationData,
+  GetTranslationResponse,
   GetAssetsData,
   GetAssetsResponse,
   GetAssetAliasesData,
@@ -224,6 +226,34 @@ import type {
   GridDataData,
   GridDataResponse,
 } from "./types.gen";
+
+export class I18NService {
+  /**
+   * Get translation file
+   * Return the translation file for the requested language and namespace.
+   *
+   * - lang: Language code (e.g., en, ko, nl, pl, zh-TW)
+   * - ns: Namespace (e.g., common, dashboard, dags, connections)
+   * @param data The data for the request.
+   * @param data.lang
+   * @param data.ns
+   * @returns unknown Successful Response
+   * @throws ApiError
+   */
+  public static getTranslation(data: GetTranslationData): CancelablePromise<GetTranslationResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v2/i18n/{lang}/{ns}.json",
+      path: {
+        lang: data.lang,
+        ns: data.ns,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    });
+  }
+}
 
 export class AssetService {
   /**
