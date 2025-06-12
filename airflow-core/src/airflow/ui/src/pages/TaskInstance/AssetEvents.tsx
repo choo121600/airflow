@@ -48,10 +48,16 @@ export const AssetEvents = () => {
   );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   return (
     <AssetEventsTable data={assetEventsData} isLoading={isLoading} titleKey="common:createdAssetEvent" />
   );
 =======
   return <AssetEventsTable data={assetEventsData} isLoading={isLoading} title="Created Asset Event" />;
 >>>>>>> 56fc9e7851 (Move asset events to its own tab (#51625))
+=======
+  return (
+    <AssetEventsTable data={assetEventsData} isLoading={isLoading} titleKey="common:createdAssetEvent" />
+  );
+>>>>>>> 24984eba4b (Fix asset events table title (#51658))
 };
