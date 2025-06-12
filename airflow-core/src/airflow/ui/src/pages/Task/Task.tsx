@@ -30,6 +30,7 @@ import { GroupTaskHeader } from "./GroupTaskHeader";
 import { Header } from "./Header";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 const tabs = [
   { icon: <LuChartColumn />, label: "Overview", value: "" },
@@ -38,6 +39,8 @@ const tabs = [
 ];
 
 >>>>>>> 56fc9e7851 (Move asset events to its own tab (#51625))
+=======
+>>>>>>> c9d55421ce (Migrate all plaintext to i18n (#51635))
 export const Task = () => {
   const { t: translate } = useTranslation("dag");
   const { dagId = "", groupId, taskId } = useParams();

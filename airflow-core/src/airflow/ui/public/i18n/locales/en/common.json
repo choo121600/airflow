@@ -54,9 +54,13 @@
     "runAfter": "Run After",
     "runType": "Run Type",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "sourceAssetEvent": "Source Asset Event",
 =======
 >>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
+=======
+    "sourceAssetEvent": "Source Asset Event",
+>>>>>>> c9d55421ce (Migrate all plaintext to i18n (#51635))
     "triggeredBy": "Triggered By"
   },
   "dagRun_one": "Dag Run",
@@ -181,9 +185,13 @@
   },
   "task": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "documentation": "Task Documentation",
 =======
 >>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
+=======
+    "documentation": "Task Documentation",
+>>>>>>> c9d55421ce (Migrate all plaintext to i18n (#51635))
     "lastInstance": "Last Instance",
     "operator": "Operator",
     "triggerRule": "Trigger Rule"
@@ -205,6 +213,9 @@
     "queuedWhen": "Queued At",
     "scheduledWhen": "Scheduled At",
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c9d55421ce (Migrate all plaintext to i18n (#51635))
     "triggerer": {
       "assigned": "Assigned triggerer",
       "class": "Trigger class",
@@ -213,8 +224,11 @@
       "latestHeartbeat": "Latest triggerer heartbeat",
       "title": "Triggerer Info"
     },
+<<<<<<< HEAD
 =======
 >>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
+=======
+>>>>>>> c9d55421ce (Migrate all plaintext to i18n (#51635))
     "unixname": "Unix Name"
   },
   "taskInstance_one": "Task Instance",

@@ -1,5 +1,6 @@
 {
   "consumingDags": "消費者 Dags",
+<<<<<<< HEAD
   "createEvent": {
     "button": "建立事件",
     "manual": {
@@ -21,6 +22,8 @@
     },
     "title": "為 {{name}} 建立資源事件"
   },
+=======
+>>>>>>> c9d55421ce (Migrate all plaintext to i18n (#51635))
   "group": "群組",
   "lastAssetEvent": "最後資源事件",
   "name": "名稱",

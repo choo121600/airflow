@@ -18,9 +18,13 @@
  */
 import { ReactFlowProvider } from "@xyflow/react";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useTranslation } from "react-i18next";
 =======
 >>>>>>> 56fc9e7851 (Move asset events to its own tab (#51625))
+=======
+import { useTranslation } from "react-i18next";
+>>>>>>> c9d55421ce (Migrate all plaintext to i18n (#51635))
 import { FiCode, FiDatabase } from "react-icons/fi";
 import { MdDetails, MdOutlineEventNote, MdOutlineTask } from "react-icons/md";
 import { useParams } from "react-router-dom";
@@ -32,6 +36,7 @@ import { isStatePending, useAutoRefresh } from "src/utils";
 import { Header } from "./Header";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 const tabs = [
   { icon: <MdOutlineTask />, label: "Task Instances", value: "" },
@@ -42,6 +47,8 @@ const tabs = [
 ];
 
 >>>>>>> 56fc9e7851 (Move asset events to its own tab (#51625))
+=======
+>>>>>>> c9d55421ce (Migrate all plaintext to i18n (#51635))
 export const Run = () => {
   const { t: translate } = useTranslation("dag");
   const { dagId = "", runId = "" } = useParams();

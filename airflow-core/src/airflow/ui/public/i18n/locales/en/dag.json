@@ -11,9 +11,13 @@
     "parsedAt": "Parsed at:"
   },
 <<<<<<< HEAD
+<<<<<<< HEAD
   "extraLinks": "Extra Links",
 =======
 >>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
+=======
+  "extraLinks": "Extra Links",
+>>>>>>> c9d55421ce (Migrate all plaintext to i18n (#51635))
   "grid": {
     "buttons": {
       "resetToLatest": "Reset to latest",
@@ -84,6 +88,7 @@
   },
   "tabs": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "assetEvents": "Asset Events",
     "auditLog": "Audit Log",
     "backfills": "Backfills",
@@ -109,6 +114,22 @@
 =======
     "tasks": "Tasks"
 >>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
+=======
+    "assetEvents": "Asset Events",
+    "auditLog": "Audit Log",
+    "backfills": "Backfills",
+    "code": "Code",
+    "details": "Details",
+    "logs": "Logs",
+    "mappedTaskInstances_one": "Task Instance [{{count}}]",
+    "mappedTaskInstances_other": "Task Instances [{{count}}]",
+    "overview": "Overview",
+    "renderedTemplates": "Rendered Templates",
+    "runs": "Runs",
+    "taskInstances": "Task Instances",
+    "tasks": "Tasks",
+    "xcom": "XCom"
+>>>>>>> c9d55421ce (Migrate all plaintext to i18n (#51635))
   },
   "taskGroups": {
     "collapseAll": "Collapse all task groups",

@@ -18,9 +18,13 @@
  */
 import { ReactFlowProvider } from "@xyflow/react";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useTranslation } from "react-i18next";
 =======
 >>>>>>> 56fc9e7851 (Move asset events to its own tab (#51625))
+=======
+import { useTranslation } from "react-i18next";
+>>>>>>> c9d55421ce (Migrate all plaintext to i18n (#51635))
 import { FiCode, FiDatabase } from "react-icons/fi";
 import { MdDetails, MdOutlineEventNote, MdOutlineTask, MdReorder, MdSyncAlt } from "react-icons/md";
 import { PiBracketsCurlyBold } from "react-icons/pi";
@@ -37,6 +41,7 @@ import { isStatePending, useAutoRefresh } from "src/utils";
 import { Header } from "./Header";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 const tabs = [
   { icon: <MdReorder />, label: "Logs", value: "" },
@@ -49,6 +54,8 @@ const tabs = [
 ];
 
 >>>>>>> 56fc9e7851 (Move asset events to its own tab (#51625))
+=======
+>>>>>>> c9d55421ce (Migrate all plaintext to i18n (#51635))
 export const TaskInstance = () => {
   const { t: translate } = useTranslation("dag");
   const { dagId = "", mapIndex = "-1", runId = "", taskId = "" } = useParams();
