@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "backfill": {
     "affected_one": "將會觸發 1 次執行。",
     "affected_other": "將會觸發 {{count}} 次執行。",
@@ -128,5 +129,10 @@
   "versionSelect": {
     "dagVersion": "Dag 版本",
     "versionCode": "v{{versionCode}}"
+=======
+  "triggerDag": {
+    "button": "觸發",
+    "title": "觸發 Dag"
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
   }
 }

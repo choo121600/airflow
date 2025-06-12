@@ -68,10 +68,14 @@ const ClearRunDialog = ({ dagRun, onClose, open }: Props) => {
         <Dialog.Header>
           <VStack align="start" gap={4}>
             <Heading size="xl">
+<<<<<<< HEAD
               <strong>
                 {translate("dags:runAndTaskActions.clear.title", { type: translate("dagRun_one") })}:{" "}
               </strong>{" "}
               {dagRunId}
+=======
+              <strong>{translate("dags:runAndTaskActions.clear.title", { type: "Run" })}: </strong> {dagRunId}
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
             </Heading>
           </VStack>
         </Dialog.Header>

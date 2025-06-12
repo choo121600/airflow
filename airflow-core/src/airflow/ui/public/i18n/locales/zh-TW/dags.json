@@ -24,8 +24,12 @@
     "clear": {
       "button": "清除 {{type}}",
       "buttonTooltip": "按下 shift+c 清除",
+<<<<<<< HEAD
       "error": "清除 {{type}} 時發生錯誤",
       "title": "清除 {{type}}"
+=======
+      "title": "清除{{type}}"
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
     },
     "delete": {
       "button": "刪除 {{type}}",
@@ -46,13 +50,21 @@
         "failed": "按下 shift+f 標記為失敗",
         "success": "按下 shift+s 標記為成功"
       },
+<<<<<<< HEAD
       "title": "標記為 {{type}} 為 {{state}}"
+=======
+      "title": "標記為{{type}}為{{state}}"
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
     },
     "options": {
       "downstream": "下游",
       "existingTasks": "清除現有任務",
       "future": "未來",
+<<<<<<< HEAD
       "onlyFailed": "只清除失敗任務",
+=======
+      "onlyFailed": "清除失敗任務",
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
       "past": "過去",
       "queueNew": "排隊新任務",
       "upstream": "上游"
@@ -62,7 +74,10 @@
     "advanced": "進階搜尋",
     "clear": "清除搜尋",
     "dags": "搜尋 Dags",
+<<<<<<< HEAD
     "hotkey": "+K",
+=======
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
     "tasks": "搜尋任務"
   },
   "sort": {

@@ -10,7 +10,10 @@
     "noCode": "No Code Found",
     "parsedAt": "Parsed at:"
   },
+<<<<<<< HEAD
   "extraLinks": "Extra Links",
+=======
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
   "grid": {
     "buttons": {
       "resetToLatest": "Reset to latest",
@@ -99,9 +102,13 @@
     "overview": "Overview",
     "renderedTemplates": "Rendered Templates",
     "runs": "Runs",
+<<<<<<< HEAD
     "taskInstances": "Task Instances",
     "tasks": "Tasks",
     "xcom": "XCom"
+=======
+    "tasks": "Tasks"
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
   },
   "taskGroups": {
     "collapseAll": "Collapse all task groups",

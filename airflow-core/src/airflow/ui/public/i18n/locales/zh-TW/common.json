@@ -22,6 +22,7 @@
   "dag_one": "Dag",
   "dag_other": "Dags",
   "dagDetails": {
+<<<<<<< HEAD
     "catchup": "自動回填",
     "concurrency": "並行數",
     "dagRunTimeout": "Dag 執行超時",
@@ -40,11 +41,16 @@
     "nextRun": "下次 Dag 執行",
     "owner": "擁有者",
     "params": "參數",
+=======
+    "latestRun": "上次 Dag 執行",
+    "nextRun": "下次 Dag 執行",
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
     "schedule": "排程",
     "tags": "標籤"
   },
   "dagId": "Dag ID",
   "dagRun": {
+<<<<<<< HEAD
     "conf": "設定",
     "dagVersions": "Dag 版本",
     "dataIntervalEnd": "資料區間結束",
@@ -55,6 +61,11 @@
     "runType": "執行類型",
     "sourceAssetEvent": "來源資源事件",
     "triggeredBy": "觸發者"
+=======
+    "dagVersions": "Dag 版本",
+    "runAfter": "最早可執行時間",
+    "runType": "執行類型"
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
   },
   "dagRun_one": "Dag 執行",
   "dagRun_other": "Dag 執行",
@@ -106,11 +117,16 @@
   },
   "noItemsFound": "找不到 {{modelName}}",
   "note": {
+<<<<<<< HEAD
     "add": "新增筆記",
     "dagRun": "Dag 執行筆記",
     "label": "筆記",
     "placeholder": "新增筆記...",
     "taskInstance": "任務實例筆記"
+=======
+    "label": "備註",
+    "placeholder": "新增備註..."
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
   },
   "pools": {
     "deferred": "已延後",
@@ -177,8 +193,11 @@
     "to": "到"
   },
   "task": {
+<<<<<<< HEAD
     "documentation": "任務文件",
     "lastInstance": "最後實例",
+=======
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
     "operator": "運算子",
     "triggerRule": "觸發規則"
   },
@@ -187,6 +206,7 @@
   "taskId": "任務 ID",
   "taskInstance": {
     "dagVersion": "Dag 版本",
+<<<<<<< HEAD
     "executor": "執行器",
     "executorConfig": "執行器設定",
     "hostname": "主機名稱",
@@ -207,6 +227,9 @@
       "title": "觸發器資訊"
     },
     "unixname": "Unix 名稱"
+=======
+    "pool": "資源池"
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
   },
   "taskInstance_one": "任務實例",
   "taskInstance_other": "任務實例",

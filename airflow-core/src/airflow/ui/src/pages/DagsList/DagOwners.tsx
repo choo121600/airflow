@@ -39,6 +39,7 @@ export const DagOwners = ({
     return hasOwnerLink ? (
       <Link
         aria-label={translate("ownerLink", { owner })}
+        asChild
         color="fg.info"
         href={link}
         key={owner}

@@ -53,7 +53,10 @@
     "queuedAt": "Queued At",
     "runAfter": "Run After",
     "runType": "Run Type",
+<<<<<<< HEAD
     "sourceAssetEvent": "Source Asset Event",
+=======
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
     "triggeredBy": "Triggered By"
   },
   "dagRun_one": "Dag Run",
@@ -177,7 +180,10 @@
     "to": "To"
   },
   "task": {
+<<<<<<< HEAD
     "documentation": "Task Documentation",
+=======
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
     "lastInstance": "Last Instance",
     "operator": "Operator",
     "triggerRule": "Trigger Rule"
@@ -198,6 +204,7 @@
     "queue": "Queue",
     "queuedWhen": "Queued At",
     "scheduledWhen": "Scheduled At",
+<<<<<<< HEAD
     "triggerer": {
       "assigned": "Assigned triggerer",
       "class": "Trigger class",
@@ -206,6 +213,8 @@
       "latestHeartbeat": "Latest triggerer heartbeat",
       "title": "Triggerer Info"
     },
+=======
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
     "unixname": "Unix Name"
   },
   "taskInstance_one": "Task Instance",

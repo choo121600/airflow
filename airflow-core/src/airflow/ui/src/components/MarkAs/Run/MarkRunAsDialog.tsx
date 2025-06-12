@@ -47,11 +47,16 @@ const MarkRunAsDialog = ({ dagRun, onClose, open, state }: Props) => {
         <Dialog.Header>
           <VStack align="start" gap={4}>
             <Heading size="xl">
+<<<<<<< HEAD
               {translate("dags:runAndTaskActions.markAs.title", {
                 state,
                 type: translate("dagRun_one"),
               })}
               : {dagRunId} <StateBadge state={state} />
+=======
+              {translate("dags:runAndTaskActions.markAs.title", { state, type: "Run" })}: {dagRunId}{" "}
+              <StateBadge state={state} />
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
             </Heading>
           </VStack>
         </Dialog.Header>

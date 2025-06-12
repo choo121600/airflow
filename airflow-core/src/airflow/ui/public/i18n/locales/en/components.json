@@ -105,12 +105,15 @@
     "selectDescription": "Trigger a single run of this Dag",
     "selectLabel": "Single Run",
     "title": "Trigger Dag",
+<<<<<<< HEAD
     "toaster": {
       "success": {
         "description": "Dag run has been successfully triggered.",
         "title": "Dag Run Triggered"
       }
     },
+=======
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
     "unpause": "Unpause {{dagDisplayName}} on trigger"
   },
   "trimText": {

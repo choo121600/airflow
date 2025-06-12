@@ -193,10 +193,17 @@ export const DurationChart = ({
               ticks: {
                 maxTicksLimit: 3,
               },
+<<<<<<< HEAD
               title: { align: "end", display: true, text: translate("common:dagRun.runAfter") },
             },
             y: {
               title: { align: "end", display: true, text: translate("common:duration") },
+=======
+              title: { align: "end", display: true, text: translate("dagRun.runAfter") },
+            },
+            y: {
+              title: { align: "end", display: true, text: translate("duration") },
+>>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
             },
           },
         }}
