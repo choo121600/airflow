@@ -17,7 +17,10 @@
  * under the License.
  */
 import { ReactFlowProvider } from "@xyflow/react";
+<<<<<<< HEAD
 import { useTranslation } from "react-i18next";
+=======
+>>>>>>> 56fc9e7851 (Move asset events to its own tab (#51625))
 import { FiCode, FiDatabase } from "react-icons/fi";
 import { MdDetails, MdOutlineEventNote, MdOutlineTask } from "react-icons/md";
 import { useParams } from "react-router-dom";
@@ -28,6 +31,17 @@ import { isStatePending, useAutoRefresh } from "src/utils";
 
 import { Header } from "./Header";
 
+<<<<<<< HEAD
+=======
+const tabs = [
+  { icon: <MdOutlineTask />, label: "Task Instances", value: "" },
+  { icon: <MdOutlineEventNote />, label: "Audit Logs", value: "events" },
+  { icon: <FiCode />, label: "Code", value: "code" },
+  { icon: <MdDetails />, label: "Details", value: "details" },
+  { icon: <FiDatabase />, label: "Asset Events", value: "asset_events" },
+];
+
+>>>>>>> 56fc9e7851 (Move asset events to its own tab (#51625))
 export const Run = () => {
   const { t: translate } = useTranslation("dag");
   const { dagId = "", runId = "" } = useParams();

@@ -29,6 +29,15 @@ import { getGroupTask } from "src/utils/groupTask";
 import { GroupTaskHeader } from "./GroupTaskHeader";
 import { Header } from "./Header";
 
+<<<<<<< HEAD
+=======
+const tabs = [
+  { icon: <LuChartColumn />, label: "Overview", value: "" },
+  { icon: <MdOutlineTask />, label: "Task Instances", value: "task_instances" },
+  { icon: <MdOutlineEventNote />, label: "Audit Logs", value: "events" },
+];
+
+>>>>>>> 56fc9e7851 (Move asset events to its own tab (#51625))
 export const Task = () => {
   const { t: translate } = useTranslation("dag");
   const { dagId = "", groupId, taskId } = useParams();

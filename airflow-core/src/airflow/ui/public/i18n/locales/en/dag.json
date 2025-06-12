@@ -80,6 +80,7 @@
     }
   },
   "tabs": {
+<<<<<<< HEAD
     "assetEvents": "Asset Events",
     "auditLog": "Audit Log",
     "backfills": "Backfills",
@@ -88,6 +89,13 @@
     "logs": "Logs",
     "mappedTaskInstances_one": "Task Instance [{{count}}]",
     "mappedTaskInstances_other": "Task Instances [{{count}}]",
+=======
+    "asset_events": "Asset Events",
+    "backfills": "Backfills",
+    "code": "Code",
+    "details": "Details",
+    "events": "Audit Logs",
+>>>>>>> 56fc9e7851 (Move asset events to its own tab (#51625))
     "overview": "Overview",
     "renderedTemplates": "Rendered Templates",
     "runs": "Runs",

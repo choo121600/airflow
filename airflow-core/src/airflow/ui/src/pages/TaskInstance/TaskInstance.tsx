@@ -17,7 +17,10 @@
  * under the License.
  */
 import { ReactFlowProvider } from "@xyflow/react";
+<<<<<<< HEAD
 import { useTranslation } from "react-i18next";
+=======
+>>>>>>> 56fc9e7851 (Move asset events to its own tab (#51625))
 import { FiCode, FiDatabase } from "react-icons/fi";
 import { MdDetails, MdOutlineEventNote, MdOutlineTask, MdReorder, MdSyncAlt } from "react-icons/md";
 import { PiBracketsCurlyBold } from "react-icons/pi";
@@ -33,6 +36,19 @@ import { isStatePending, useAutoRefresh } from "src/utils";
 
 import { Header } from "./Header";
 
+<<<<<<< HEAD
+=======
+const tabs = [
+  { icon: <MdReorder />, label: "Logs", value: "" },
+  { icon: <PiBracketsCurlyBold />, label: "Rendered Templates", value: "rendered_templates" },
+  { icon: <MdSyncAlt />, label: "XCom", value: "xcom" },
+  { icon: <MdOutlineEventNote />, label: "Audit Logs", value: "events" },
+  { icon: <FiCode />, label: "Code", value: "code" },
+  { icon: <MdDetails />, label: "Details", value: "details" },
+  { icon: <FiDatabase />, label: "Asset Events", value: "asset_events" },
+];
+
+>>>>>>> 56fc9e7851 (Move asset events to its own tab (#51625))
 export const TaskInstance = () => {
   const { t: translate } = useTranslation("dag");
   const { dagId = "", mapIndex = "-1", runId = "", taskId = "" } = useParams();
