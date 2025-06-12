@@ -14,6 +14,7 @@
     "selectDescription": "Run this Dag for a range of dates",
     "selectLabel": "Backfill",
     "title": "Run Backfill",
+<<<<<<< HEAD
     "toaster": {
       "success": {
         "description": "Backfill jobs have been successfully triggered.",
@@ -26,6 +27,10 @@
       "datesRequired": "Both Data Interval Start Date and End Date must be provided.",
       "startBeforeEnd": "Data Interval Start Date must be less than or equal to Data Interval End Date."
     }
+=======
+    "tooltip": "Backfill requires a schedule",
+    "unpause": "Unpause {{dag_display_name}} on trigger"
+>>>>>>> 2a94211eca (Add some missing translations (#51666))
   },
   "banner": {
     "backfillInProgress": "Backfill in progress",
