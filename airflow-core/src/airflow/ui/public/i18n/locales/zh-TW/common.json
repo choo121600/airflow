@@ -23,6 +23,9 @@
   "dag_other": "Dags",
   "dagDetails": {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> ec7cc5d948 (i18n: Closing zh-TW translation gaps (#51677))
     "catchup": "自動回填",
     "concurrency": "並行數",
     "dagRunTimeout": "Dag 執行超時",
@@ -34,6 +37,7 @@
     "lastExpired": "最後過期時間",
     "lastParsed": "最後解析時間",
     "latestDagVersion": "最新 Dag 版本",
+<<<<<<< HEAD
     "latestRun": "上次 Dag 執行",
     "maxActiveRuns": "活躍執行數上限",
     "maxActiveTasks": "活躍任務數上限",
@@ -42,14 +46,25 @@
     "owner": "擁有者",
     "params": "參數",
 =======
+=======
+>>>>>>> ec7cc5d948 (i18n: Closing zh-TW translation gaps (#51677))
     "latestRun": "上次 Dag 執行",
+    "maxActiveRuns": "活躍執行數上限",
+    "maxActiveTasks": "活躍任務數上限",
+    "maxConsecutiveFailedDagRuns": "連續失敗執行數上限",
     "nextRun": "下次 Dag 執行",
+<<<<<<< HEAD
 >>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
+=======
+    "owner": "擁有者",
+    "params": "參數",
+>>>>>>> ec7cc5d948 (i18n: Closing zh-TW translation gaps (#51677))
     "schedule": "排程",
     "tags": "標籤"
   },
   "dagId": "Dag ID",
   "dagRun": {
+<<<<<<< HEAD
 <<<<<<< HEAD
     "conf": "設定",
     "dagVersions": "Dag 版本",
@@ -62,10 +77,23 @@
     "sourceAssetEvent": "來源資源事件",
     "triggeredBy": "觸發者"
 =======
+=======
+    "conf": "設定",
+>>>>>>> ec7cc5d948 (i18n: Closing zh-TW translation gaps (#51677))
     "dagVersions": "Dag 版本",
+    "dataIntervalEnd": "資料區間結束",
+    "dataIntervalStart": "資料區間起始",
+    "lastSchedulingDecision": "最後排程決策",
+    "queuedAt": "開始排隊時間",
     "runAfter": "最早可執行時間",
+<<<<<<< HEAD
     "runType": "執行類型"
 >>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
+=======
+    "runType": "執行類型",
+    "sourceAssetEvent": "來源資源事件",
+    "triggeredBy": "觸發者"
+>>>>>>> ec7cc5d948 (i18n: Closing zh-TW translation gaps (#51677))
   },
   "dagRun_one": "Dag 執行",
   "dagRun_other": "Dag 執行",
@@ -118,15 +146,21 @@
   "noItemsFound": "找不到 {{modelName}}",
   "note": {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> ec7cc5d948 (i18n: Closing zh-TW translation gaps (#51677))
     "add": "新增筆記",
     "dagRun": "Dag 執行筆記",
     "label": "筆記",
     "placeholder": "新增筆記...",
     "taskInstance": "任務實例筆記"
+<<<<<<< HEAD
 =======
     "label": "備註",
     "placeholder": "新增備註..."
 >>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
+=======
+>>>>>>> ec7cc5d948 (i18n: Closing zh-TW translation gaps (#51677))
   },
   "pools": {
     "deferred": "已延後",
@@ -194,10 +228,15 @@
   },
   "task": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "documentation": "任務文件",
     "lastInstance": "最後實例",
 =======
 >>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
+=======
+    "documentation": "任務文件",
+    "lastInstance": "最後實例",
+>>>>>>> ec7cc5d948 (i18n: Closing zh-TW translation gaps (#51677))
     "operator": "運算子",
     "triggerRule": "觸發規則"
   },
@@ -207,6 +246,9 @@
   "taskInstance": {
     "dagVersion": "Dag 版本",
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> ec7cc5d948 (i18n: Closing zh-TW translation gaps (#51677))
     "executor": "執行器",
     "executorConfig": "執行器設定",
     "hostname": "主機名稱",
@@ -227,9 +269,12 @@
       "title": "觸發器資訊"
     },
     "unixname": "Unix 名稱"
+<<<<<<< HEAD
 =======
     "pool": "資源池"
 >>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
+=======
+>>>>>>> ec7cc5d948 (i18n: Closing zh-TW translation gaps (#51677))
   },
   "taskInstance_one": "任務實例",
   "taskInstance_other": "任務實例",
