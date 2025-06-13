@@ -15,12 +15,16 @@
     "selectLabel": "Backfill",
     "title": "Run Backfill",
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 150cb4b15a (Fix translations for toasts (#51674))
     "toaster": {
       "success": {
         "description": "Backfill jobs have been successfully triggered.",
         "title": "Backfill generated"
       }
     },
+<<<<<<< HEAD
     "tooltip": "Backfill requires a schedule",
     "unpause": "Unpause {{dag_display_name}} on trigger",
     "validation": {
@@ -31,6 +35,14 @@
     "tooltip": "Backfill requires a schedule",
     "unpause": "Unpause {{dag_display_name}} on trigger"
 >>>>>>> 2a94211eca (Add some missing translations (#51666))
+=======
+    "tooltip": "Backfill requires a schedule",
+    "unpause": "Unpause {{dag_display_name}} on trigger",
+    "validation": {
+      "datesRequired": "Both Data Interval Start Date and End Date must be provided.",
+      "startBeforeEnd": "Data Interval Start Date must be less than or equal to Data Interval End Date."
+    }
+>>>>>>> 150cb4b15a (Fix translations for toasts (#51674))
   },
   "banner": {
     "backfillInProgress": "Backfill in progress",
@@ -111,14 +123,20 @@
     "selectLabel": "Single Run",
     "title": "Trigger Dag",
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 150cb4b15a (Fix translations for toasts (#51674))
     "toaster": {
       "success": {
         "description": "Dag run has been successfully triggered.",
         "title": "Dag Run Triggered"
       }
     },
+<<<<<<< HEAD
 =======
 >>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
+=======
+>>>>>>> 150cb4b15a (Fix translations for toasts (#51674))
     "unpause": "Unpause {{dagDisplayName}} on trigger"
   },
   "trimText": {

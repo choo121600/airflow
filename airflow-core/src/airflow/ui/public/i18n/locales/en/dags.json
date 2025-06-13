@@ -25,9 +25,13 @@
       "button": "Clear {{type}}",
       "buttonTooltip": "Press shift+c to clear",
 <<<<<<< HEAD
+<<<<<<< HEAD
       "error": "Failed to clear {{type}}",
 =======
 >>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
+=======
+      "error": "Failed to clear {{type}}",
+>>>>>>> 150cb4b15a (Fix translations for toasts (#51674))
       "title": "Clear {{type}}"
     },
     "delete": {

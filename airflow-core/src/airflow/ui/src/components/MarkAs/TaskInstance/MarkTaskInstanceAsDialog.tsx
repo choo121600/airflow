@@ -91,14 +91,20 @@ const MarkTaskInstanceAsDialog = ({ onClose, open, state, taskInstance }: Props)
             <Heading size="xl">
               <strong>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 150cb4b15a (Fix translations for toasts (#51674))
                 {translate("dags:runAndTaskActions.markAs.title", {
                   state,
                   type: translate("taskInstance_one"),
                 })}
                 :
+<<<<<<< HEAD
 =======
                 {translate("dags:runAndTaskActions.markAs.title", { state, type: "Task Instance" })}:
 >>>>>>> bf7a5c94b0 (Move Dag, run and TI into common.json (#51622))
+=======
+>>>>>>> 150cb4b15a (Fix translations for toasts (#51674))
               </strong>{" "}
               {taskInstance.task_display_name} <Time datetime={taskInstance.start_date} />{" "}
               <StateBadge state={state} />
