@@ -125,7 +125,7 @@ You can also configure these flags through configuration files. See `Configuring
 Key Import Updates
 ^^^^^^^^^^^^^^^^^^
 
-While ruff can automatically fix many import issues, here are the key import changes you'll need to make to ensure your DAGs and other
+While ruff can automatically fix many import issues, here are the key import changes you'll need to make to ensure your Dags and other
 code import Airflow components correctly in Airflow 3. The older paths are deprecated and will be removed in a future Airflow version.
 
 .. list-table::
@@ -353,7 +353,7 @@ Breaking Changes
 Some capabilities which were deprecated in Airflow 2.x are not available in Airflow 3.
 These include:
 
-- **SubDAGs**: Replaced by TaskGroups, Assets, and Data Aware Scheduling.
+- **SubDags**: Replaced by TaskGroups, Assets, and Data Aware Scheduling.
 - **Sequential Executor**: Replaced by LocalExecutor, which can be used with SQLite for local development use cases.
 - **CeleryKubernetesExecutor and LocalKubernetesExecutor**: Replaced by `Multiple Executor Configuration <https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/executor/index.html#using-multiple-executors-concurrently>`_
 - **SLAs**: Deprecated and removed; replaced with :doc:`Deadline Alerts </howto/deadline-alerts>`.

@@ -176,7 +176,7 @@ You can use Jinja templating to pass information from the triggering asset event
 
 **Example: Single Triggering Asset**
 
-If your DAG is triggered by a single asset, you can access its information like this:
+If your Dag is triggered by a single asset, you can access its information like this:
 
 .. code-block:: python
 
@@ -201,7 +201,7 @@ In this example, ``triggering_asset_events.values() | first | first`` does the f
 
 **Example: Multiple Triggering Assets**
 
-When your DAG is triggered by multiple assets, you can iterate through them in your Jinja template.
+When your Dag is triggered by multiple assets, you can iterate through them in your Jinja template.
 
 .. code-block:: python
 
@@ -212,7 +212,7 @@ When your DAG is triggered by multiple assets, you can iterate through them in y
             {% for asset_uri, events in triggering_asset_events.items() %}
               echo "Processing asset: {{ asset_uri }}"
               {% for event in events %}
-                echo "  Triggered by DAG: {{ event.source_dag_run.dag_id }}"
+                echo "  Triggered by Dag: {{ event.source_dag_run.dag_id }}"
                 echo "  Data interval start: {{ event.source_dag_run.data_interval_start }}"
                 echo "  Data interval end: {{ event.source_dag_run.data_interval_end }}"
               {% endfor %}
@@ -234,7 +234,7 @@ You can also access the ``triggering_asset_events`` directly in a Python functio
             for asset, asset_events in triggering_asset_events.items():
                 print(f"Asset: {asset.uri}")
                 for event in asset_events:
-                    print(f"  - Triggered by DAG run: {event.source_dag_run.dag_id}")
+                    print(f"  - Triggered by Dag run: {event.source_dag_run.dag_id}")
                     print(
                         f"    Data interval: {event.source_dag_run.data_interval_start} to {event.source_dag_run.data_interval_end}"
                     )
@@ -245,7 +245,7 @@ You can also access the ``triggering_asset_events`` directly in a Python functio
     print_triggering_asset_events()
 
 .. note::
-    When a DAG is scheduled by multiple assets, there may be multiple asset events for each asset. The logic for handling these events can be complex. It is up to the DAG author to decide how to process them. For example, you might want to process all new data since the last run, or you might want to process each triggering event individually.
+    When a Dag is scheduled by multiple assets, there may be multiple asset events for each asset. The logic for handling these events can be complex. It is up to the Dag author to decide how to process them. For example, you might want to process all new data since the last run, or you might want to process each triggering event individually.
 
 Note that this example is using `(.values() | first | first) <https://jinja.palletsprojects.com/en/3.1.x/templates/#jinja-filters.first>`_ to
 fetch the first of one asset given to the Dag, and the first of one AssetEvent for that asset. An implementation can be quite complex if you

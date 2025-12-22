@@ -37,7 +37,7 @@ The primary purposes of audit logs include:
 - **Change Management**: Tracking modifications to critical system components
 
 .. note::
-   Access to audit logs requires the ``Audit Logs.can_read`` permission. Users with this permission can view all audit entries regardless of their DAG-specific access rights.
+   Access to audit logs requires the ``Audit Logs.can_read`` permission. Users with this permission can view all audit entries regardless of their Dag-specific access rights.
 
 
 Understanding Event Logs
@@ -113,7 +113,7 @@ Airflow's audit logging system captures events across three distinct operational
 **User-Initiated Actions**
    These events occur when users interact with Airflow through any interface (web UI, REST API, or command-line tools). Examples include:
 
-   - Manual DAG run triggers and modifications
+   - Manual Dag run triggers and modifications
    - Configuration changes to variables, connections, and pools
    - Task instance state modifications (clearing, marking as success/failed)
    - Administrative operations and user management activities
@@ -130,7 +130,7 @@ Airflow's audit logging system captures events across three distinct operational
    These events capture activities performed through Airflow's CLI tools:
 
    - Direct task execution commands
-   - DAG management operations
+   - Dag management operations
    - System administration and maintenance tasks
    - Automated script executions
 
@@ -140,7 +140,7 @@ Common Audit Log Scenarios
 
 To facilitate audit log analysis, here are some frequently encountered scenarios and their corresponding queries:
 
-**"Who triggered this DAG?"**
+**"Who triggered this Dag?"**
 
 .. code-block:: sql
 
@@ -211,19 +211,19 @@ Task Instance Events
 User Action Events
 ~~~~~~~~~~~~~~~~~~
 
-**DAG operations**:
+**Dag operations**:
 
-- ``trigger_dag_run``: User triggered a DAG run
-- ``delete_dag_run``: User deleted a DAG run
-- ``patch_dag_run``: User modified a DAG run
-- ``clear_dag_run``: User cleared a DAG run
-- ``get_dag_run``: User retrieved DAG run information
-- ``get_dag_runs_batch``: User retrieved multiple DAG runs
-- ``post_dag_run``: User created a DAG run
-- ``patch_dag``: User modified DAG configuration
-- ``get_dag``: User retrieved DAG information
-- ``get_dags``: User retrieved multiple DAGs
-- ``delete_dag``: User deleted a DAG
+- ``trigger_dag_run``: User triggered a Dag run
+- ``delete_dag_run``: User deleted a Dag run
+- ``patch_dag_run``: User modified a Dag run
+- ``clear_dag_run``: User cleared a Dag run
+- ``get_dag_run``: User retrieved Dag run information
+- ``get_dag_runs_batch``: User retrieved multiple Dag runs
+- ``post_dag_run``: User created a Dag run
+- ``patch_dag``: User modified Dag configuration
+- ``get_dag``: User retrieved Dag information
+- ``get_dags``: User retrieved multiple Dags
+- ``delete_dag``: User deleted a Dag
 
 **Task instance operations**:
 
@@ -270,10 +270,10 @@ User Action Events
 - ``materialize_asset``: User triggered asset materialization
 - ``get_asset_queued_events``: User retrieved queued asset events
 - ``delete_asset_queued_events``: User deleted queued asset events
-- ``get_dag_asset_queued_events``: User retrieved DAG asset queued events
-- ``delete_dag_asset_queued_events``: User deleted DAG asset queued events
-- ``get_dag_asset_queued_event``: User retrieved specific DAG asset queued event
-- ``delete_dag_asset_queued_event``: User deleted specific DAG asset queued event
+- ``get_dag_asset_queued_events``: User retrieved Dag asset queued events
+- ``delete_dag_asset_queued_events``: User deleted Dag asset queued events
+- ``get_dag_asset_queued_event``: User retrieved specific Dag asset queued event
+- ``delete_dag_asset_queued_event``: User deleted specific Dag asset queued event
 
 **Backfill operations**:
 
@@ -301,22 +301,22 @@ User Action Events
 CLI Events
 ~~~~~~~~~~
 
-**DAG Management Commands**:
+**Dag Management Commands**:
 
-- ``cli_dags_list``: List all DAGs in the system
-- ``cli_dags_show``: Display DAG information and structure
-- ``cli_dags_state``: Check the state of a DAG run
-- ``cli_dags_next_execution``: Show next execution time for a DAG
-- ``cli_dags_trigger``: Trigger a DAG run from command line
-- ``cli_dags_delete``: Delete a DAG and its metadata
-- ``cli_dags_pause``: Pause a DAG
-- ``cli_dags_unpause``: Unpause a DAG
-- ``cli_dags_backfill``: Backfill DAG runs for a date range
-- ``cli_dags_test``: Test a DAG without affecting the database
+- ``cli_dags_list``: List all Dags in the system
+- ``cli_dags_show``: Display Dag information and structure
+- ``cli_dags_state``: Check the state of a Dag run
+- ``cli_dags_next_execution``: Show next execution time for a Dag
+- ``cli_dags_trigger``: Trigger a Dag run from command line
+- ``cli_dags_delete``: Delete a Dag and its metadata
+- ``cli_dags_pause``: Pause a Dag
+- ``cli_dags_unpause``: Unpause a Dag
+- ``cli_dags_backfill``: Backfill Dag runs for a date range
+- ``cli_dags_test``: Test a Dag without affecting the database
 
 **Task Management Commands**:
 
-- ``cli_tasks_list``: List tasks for a specific DAG
+- ``cli_tasks_list``: List tasks for a specific Dag
 - ``cli_tasks_run``: Execute a specific task instance
 - ``cli_tasks_test``: Test a task without affecting the database
 - ``cli_tasks_state``: Check the state of a task instance
@@ -381,7 +381,7 @@ CLI Events
 - ``cli_triggerer``: Start the triggerer process
 - ``cli_standalone``: Start Airflow in standalone mode
 - ``cli_api_server``: Start the Airflow API server
-- ``cli_dag_processor``: Start the DAG processor service
+- ``cli_dag_processor``: Start the Dag processor service
 - ``cli_celery_worker``: Start Celery worker (alternative command)
 - ``cli_celery_flower``: Start Celery Flower (alternative command)
 
@@ -402,7 +402,7 @@ CLI Events
 
 - ``cli_test``: Run tests
 - ``cli_render``: Render templates
-- ``cli_dag_deps``: Show DAG dependencies
+- ``cli_dag_deps``: Show Dag dependencies
 - ``cli_task_deps``: Show task dependencies
 
 **Legacy Commands**:
@@ -410,11 +410,11 @@ CLI Events
 - ``cli_run``: Legacy task run command
 - ``cli_backfill``: Legacy backfill command
 - ``cli_clear``: Legacy clear command
-- ``cli_list_dags``: Legacy DAG list command
+- ``cli_list_dags``: Legacy Dag list command
 - ``cli_list_tasks``: Legacy task list command
 - ``cli_pause``: Legacy pause command
 - ``cli_unpause``: Legacy unpause command
-- ``cli_trigger_dag``: Legacy DAG trigger command
+- ``cli_trigger_dag``: Legacy Dag trigger command
 
 Each CLI command audit log entry includes:
 
@@ -460,17 +460,17 @@ Each audit log record contains structured information that provides a complete p
    * - ``owner``
      - Identity of the actor: username for user actions, "airflow" for system events
    * - ``dag_id``
-     - Identifier of the affected DAG (when applicable)
+     - Identifier of the affected Dag (when applicable)
    * - ``task_id``
      - Identifier of the affected task (when applicable)
    * - ``run_id``
-     - Specific DAG run identifier for tracking execution instances
+     - Specific Dag run identifier for tracking execution instances
    * - ``try_number``
      - Attempt number for task retries and re-executions
    * - ``map_index``
      - Index for dynamically mapped tasks
    * - ``logical_date``
-     - Logical execution date of the DAG run
+     - Logical execution date of the Dag run
    * - ``extra``
      - JSON-formatted additional context (parameters, error details, etc.)
 
@@ -490,7 +490,7 @@ Effective audit log analysis requires understanding the various methods availabl
     # Filter by event type
     curl -X GET "http://localhost:8080/api/v1/eventLogs?event=trigger_dag_run"
 
-    # Filter by DAG
+    # Filter by Dag
     curl -X GET "http://localhost:8080/api/v1/eventLogs?dag_id=example_dag"
 
     # Filter by date range
@@ -513,7 +513,7 @@ Effective audit log analysis requires understanding the various methods availabl
     WHERE event = 'failed'
     ORDER BY dttm DESC;
 
-    -- Get user actions on specific DAG
+    -- Get user actions on specific Dag
     SELECT dttm, event, owner, extra
     FROM log
     WHERE dag_id = 'example_dag' AND owner IS NOT NULL
@@ -535,7 +535,7 @@ Event logs (operational logs) are typically accessed through different methods d
     # View webserver logs
     tail -f $AIRFLOW_HOME/logs/webserver/webserver.log
 
-    # View task logs for specific DAG run
+    # View task logs for specific Dag run
     cat $AIRFLOW_HOME/logs/dag_id/task_id/2024-01-01T00:00:00+00:00/1.log
 
 **REST API for Task Logs**:
@@ -611,11 +611,11 @@ The following examples demonstrate practical applications of audit log queries f
      AND dttm BETWEEN '2024-01-01' AND '2024-01-31'
    ORDER BY dttm;
 
-**Troubleshooting DAG Issues**
+**Troubleshooting Dag Issues**
 
 .. code-block:: sql
 
-   -- See all events for a problematic DAG run
+   -- See all events for a problematic Dag run
    SELECT dttm, event, task_id, owner, extra
    FROM log
    WHERE dag_id = 'example_dag'

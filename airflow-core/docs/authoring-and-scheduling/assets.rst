@@ -180,8 +180,8 @@ This is quite a lot of boilerplate. Airflow provides a shorthand for this simple
 Declaring an ``@asset`` automatically creates:
 
 * An ``Asset`` with *name* set to the function name.
-* A ``DAG`` with *dag_id* set to the function name.
-* A task inside the ``DAG`` with *task_id* set to the function name, and *outlet* to the created ``Asset``.
+* A ``Dag`` with *dag_id* set to the function name.
+* A task inside the ``Dag`` with *task_id* set to the function name, and *outlet* to the created ``Asset``.
 
 Attaching extra information to an emitting asset event
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
