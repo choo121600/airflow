@@ -80,6 +80,8 @@ class GridRunsResponse(BaseModel):
     state: DagRunState | None
     run_type: DagRunType
     has_missed_deadline: bool
+    bundle_version: str | None = None
+    dag_version_number: int | None = None
 
     @computed_field
     def duration(self) -> float:
