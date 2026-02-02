@@ -43,42 +43,39 @@ export class DagsPage extends BasePage {
   public readonly searchBox: Locator;
   public readonly searchInput: Locator;
   public readonly sortSelect: Locator;
-  public readonly stateElement: Locator;
   public readonly successFilter: Locator;
   public readonly tableViewButton: Locator;
   public readonly triggerButton: Locator;
   public readonly triggerRuleFilter: Locator;
 
   public get taskRows(): Locator {
-    return this.page.locator('[data-testid="table-list"] > tbody > tr');
+    return this.page.getByTestId("table-list").locator("tbody > tr");
   }
 
   public constructor(page: Page) {
     super(page);
-    this.triggerButton = page.locator('button[aria-label="Trigger Dag"]:has-text("Trigger")');
-    // Use .last() instead of .nth(1) — when the modal opens, the confirm button
-    // is the last "Trigger" button in the DOM regardless of whether the main
-    // page trigger button has visible text or is icon-only.
-    this.confirmButton = page.locator('button:has-text("Trigger")').last();
-    this.stateElement = page.locator('*:has-text("State") + *').first();
-    this.paginationNextButton = page.locator('[data-testid="next"]');
-    this.paginationPrevButton = page.locator('[data-testid="prev"]');
+    this.triggerButton = page.getByRole("button", { name: "Trigger Dag" });
+    this.confirmButton = page
+      .locator('[role="dialog"], [role="alertdialog"]')
+      .getByRole("button", { name: "Trigger" });
+    this.paginationNextButton = page.getByTestId("next");
+    this.paginationPrevButton = page.getByTestId("prev");
     this.searchBox = page.getByRole("textbox", { name: /search/i });
-    this.searchInput = page.getByPlaceholder("Search DAGs");
+    this.searchInput = page.getByPlaceholder("Search Dags");
     this.operatorFilter = page.getByRole("combobox").filter({ hasText: /operator/i });
     this.triggerRuleFilter = page.getByRole("combobox").filter({ hasText: /trigger/i });
     this.retriesFilter = page.getByRole("combobox").filter({ hasText: /retr/i });
     // View toggle buttons
-    this.cardViewButton = page.locator('button[aria-label="Show card view"]');
-    this.tableViewButton = page.locator('button[aria-label="Show table view"]');
+    this.cardViewButton = page.getByRole("button", { name: "Show card view" });
+    this.tableViewButton = page.getByRole("button", { name: "Show table view" });
     // Sort select (card view only)
-    this.sortSelect = page.locator('[data-testid="sort-by-select"]');
+    this.sortSelect = page.getByTestId("sort-by-select");
     // Status filter buttons
-    this.successFilter = page.locator('button:has-text("Success")');
-    this.failedFilter = page.locator('button:has-text("Failed")');
-    this.runningFilter = page.locator('button:has-text("Running")');
-    this.queuedFilter = page.locator('button:has-text("Queued")');
-    this.needsReviewFilter = page.locator('button:has-text("Needs Review")');
+    this.successFilter = page.getByRole("button", { name: "Success" });
+    this.failedFilter = page.getByRole("button", { name: "Failed" });
+    this.runningFilter = page.getByRole("button", { name: "Running" });
+    this.queuedFilter = page.getByRole("button", { name: "Queued" });
+    this.needsReviewFilter = page.getByRole("button", { name: "Needs Review" });
   }
 
   // URL builders for dynamic paths
@@ -94,15 +91,16 @@ export class DagsPage extends BasePage {
    * Clear the search input and wait for list to reset
    */
   public async clearSearch(): Promise<void> {
-    await this.searchInput.clear();
+    const responsePromise = this.page
+      .waitForResponse((resp) => resp.url().includes("/dags") && resp.status() === 200, {
+        timeout: 5000,
+      })
+      .catch(() => undefined); // OK if cached
 
-    // Trigger blur to ensure the clear action is processed
+    await this.searchInput.clear();
     await this.searchInput.blur();
 
-    // Small delay to allow React to process the state change
-    await this.page.waitForTimeout(500);
-
-    // Wait for the DAG list to be visible again
+    await responsePromise;
     await this.waitForDagList();
   }
 
@@ -112,25 +110,13 @@ export class DagsPage extends BasePage {
   public async clickNextPage(): Promise<void> {
     const initialDagNames = await this.getDagNames();
 
-    // Set up API listener before action
-    const responsePromise = this.page
-      .waitForResponse((resp) => resp.url().includes("/dags") && resp.status() === 200, {
-        timeout: 30_000,
-      })
-      .catch(() => {
-        /* API might be cached */
-      });
-
     await this.paginationNextButton.click();
 
-    // Wait for API response
-    await responsePromise;
-
-    // Wait for UI to actually change (increased timeout for slower browsers like Firefox)
     await expect
       .poll(() => this.getDagNames(), {
+        intervals: [500, 1000, 2000],
         message: "List did not update after clicking next page",
-        timeout: 30_000,
+        timeout: 20_000,
       })
       .not.toEqual(initialDagNames);
 
@@ -143,25 +129,13 @@ export class DagsPage extends BasePage {
   public async clickPrevPage(): Promise<void> {
     const initialDagNames = await this.getDagNames();
 
-    // Set up API listener before action
-    const responsePromise = this.page
-      .waitForResponse((resp) => resp.url().includes("/dags") && resp.status() === 200, {
-        timeout: 30_000,
-      })
-      .catch(() => {
-        /* API might be cached */
-      });
-
     await this.paginationPrevButton.click();
 
-    // Wait for API response
-    await responsePromise;
-
-    // Wait for UI to actually change (increased timeout for slower browsers like Firefox)
     await expect
       .poll(() => this.getDagNames(), {
+        intervals: [500, 1000, 2000],
         message: "List did not update after clicking prev page",
-        timeout: 30_000,
+        timeout: 20_000,
       })
       .not.toEqual(initialDagNames);
 
@@ -184,7 +158,7 @@ export class DagsPage extends BasePage {
   }
 
   /**
-   * Filter DAGs by status
+   * Filter Dags by status
    */
   public async filterByStatus(
     status: "failed" | "needs_review" | "queued" | "running" | "success",
@@ -197,8 +171,15 @@ export class DagsPage extends BasePage {
       success: this.successFilter,
     };
 
-    await filterMap[status].click();
-    await this.page.waitForTimeout(500);
+    const filterButton = filterMap[status];
+
+    await expect(filterButton).toBeVisible({ timeout: 5000 });
+    await filterButton.click();
+    await this.page.waitForURL(new RegExp(`last_dag_run_state=${status}`), {
+      timeout: 10_000,
+    });
+
+    await this.waitForSkeletonToDisappear();
   }
 
   public async filterByTriggerRule(rule: string): Promise<void> {
@@ -212,22 +193,18 @@ export class DagsPage extends BasePage {
     await this.waitForDagList();
 
     // Check which view is active
-    const cardList = this.page.locator('[data-testid="card-list"]');
+    const cardList = this.page.getByTestId("card-list");
     const isCardView = await cardList.isVisible();
 
-    const links = isCardView
-      ? await this.page.locator('[data-testid="dag-id"]').all()
-      : await this.page.locator('[data-testid="table-list"] tbody tr td:nth-child(2) a').all();
+    const linkLocator = isCardView
+      ? this.page.getByTestId("dag-id")
+      : this.page.getByTestId("table-list").locator("tbody tr td:nth-child(2) a");
 
-    const hrefs: Array<string> = [];
-
-    for (const link of links) {
-      const href = await link.getAttribute("href");
-
-      if (href !== null && href !== "") {
-        hrefs.push(href);
-      }
-    }
+    const hrefs = await linkLocator.evaluateAll((elements) =>
+      elements
+        .map((el) => el.getAttribute("href"))
+        .filter((href): href is string => href !== null && href !== ""),
+    );
 
     return hrefs;
   }
@@ -239,12 +216,12 @@ export class DagsPage extends BasePage {
     await this.waitForDagList();
 
     // Check which view is active
-    const cardList = this.page.locator('[data-testid="card-list"]');
+    const cardList = this.page.getByTestId("card-list");
     const isCardView = await cardList.isVisible();
 
     const dagLinks = isCardView
-      ? this.page.locator('[data-testid="dag-id"]')
-      : this.page.locator('[data-testid="table-list"] tbody tr td:nth-child(2) a');
+      ? this.page.getByTestId("dag-id")
+      : this.page.getByTestId("table-list").locator("tbody tr td:nth-child(2) a");
 
     const texts = await dagLinks.allTextContents();
 
@@ -252,23 +229,23 @@ export class DagsPage extends BasePage {
   }
 
   /**
-   * Get count of DAGs on current page
+   * Get count of Dags on current page
    */
   public async getDagsCount(): Promise<number> {
     await this.waitForDagList();
 
     // Check which view is active
-    const cardList = this.page.locator('[data-testid="card-list"]');
+    const cardList = this.page.getByTestId("card-list");
     const isCardView = await cardList.isVisible();
 
     if (isCardView) {
       // Card view: count dag-id elements
-      const dagCards = this.page.locator('[data-testid="dag-id"]');
+      const dagCards = this.page.getByTestId("dag-id");
 
       return dagCards.count();
     } else {
       // Table view: count table body rows
-      const tableRows = this.page.locator('[data-testid="table-list"] tbody tr');
+      const tableRows = this.page.getByTestId("table-list").locator("tbody tr");
 
       return tableRows.count();
     }
@@ -276,33 +253,22 @@ export class DagsPage extends BasePage {
 
   public async getFilterOptions(filter: Locator): Promise<Array<string>> {
     await filter.click();
-    await this.page.waitForTimeout(500);
 
-    const controlsId = await filter.getAttribute("aria-controls");
-    let options;
+    const listbox = this.page.locator('div[role="listbox"][data-state="open"]').first();
 
-    if (controlsId === null) {
-      const listbox = this.page.locator('div[role="listbox"]').first();
+    await expect(listbox).toBeVisible({ timeout: 5000 });
 
-      await listbox.waitFor({ state: "visible", timeout: 5000 });
-      options = listbox.locator('div[role="option"]');
-    } else {
-      options = this.page.locator(`[id="${controlsId}"] div[role="option"]`);
-    }
+    const options = listbox.locator('div[role="option"]');
 
-    const count = await options.count();
-    const dataValues: Array<string> = [];
+    await expect(options.first()).toBeVisible({ timeout: 5000 });
 
-    for (let i = 0; i < count; i++) {
-      const value = await options.nth(i).getAttribute("data-value");
-
-      if (value !== null && value.trim().length > 0) {
-        dataValues.push(value);
-      }
-    }
+    const dataValues = await options.evaluateAll((elements) =>
+      elements
+        .map((el) => el.dataset.value)
+        .filter((value): value is string => value !== undefined && value.trim().length > 0),
+    );
 
     await this.page.keyboard.press("Escape");
-    await this.page.waitForTimeout(300);
 
     return dataValues;
   }
@@ -311,22 +277,16 @@ export class DagsPage extends BasePage {
    * Navigate to Dags list page
    */
   public async navigate(): Promise<void> {
-    // Set up API listener before navigation
     const responsePromise = this.page
       .waitForResponse((resp) => resp.url().includes("/api/v2/dags") && resp.status() === 200, {
-        timeout: 60_000,
+        timeout: 30_000,
       })
-      .catch(() => {
-        /* API might fail or timeout */
-      });
+      .catch(() => undefined);
 
     await this.navigateTo(DagsPage.dagsListUrl);
 
-    // Wait for initial API response
     await responsePromise;
-
-    // Give UI time to render the response
-    await this.page.waitForTimeout(500);
+    await this.waitForDagList();
   }
 
   /**
@@ -337,12 +297,20 @@ export class DagsPage extends BasePage {
   }
 
   public async navigateToDagTasks(dagId: string): Promise<void> {
+    const responsePromise = this.page
+      .waitForResponse((resp) => resp.url().includes(`/dags/${dagId}/tasks`) && resp.status() === 200, {
+        timeout: 20_000,
+      })
+      .catch(() => undefined);
+
     await this.page.goto(`/dags/${dagId}/tasks`);
-    await this.page
-      .locator("th")
-      .filter({ hasText: /^Operator$/ })
-      .first()
-      .waitFor({ state: "visible", timeout: 30_000 });
+
+    await responsePromise;
+
+    const operatorHeader = this.page.getByRole("columnheader", { name: "Operator" });
+
+    await expect(operatorHeader).toBeVisible({ timeout: 15_000 });
+    await expect(this.taskRows.first()).toBeVisible({ timeout: 15_000 });
   }
 
   /**
@@ -353,11 +321,9 @@ export class DagsPage extends BasePage {
 
     const responsePromise = this.page
       .waitForResponse((resp) => resp.url().includes("/dags") && resp.status() === 200, {
-        timeout: 30_000,
+        timeout: 10_000,
       })
-      .catch(() => {
-        /* API might be cached */
-      });
+      .catch(() => undefined);
 
     await this.searchInput.fill(searchTerm);
 
@@ -366,7 +332,7 @@ export class DagsPage extends BasePage {
     await expect
       .poll(
         async () => {
-          const noDagFound = this.page.locator("text=/no dag/i");
+          const noDagFound = this.page.getByText(/no dag/i);
           const isNoDagVisible = await noDagFound.isVisible().catch(() => false);
 
           if (isNoDagVisible) {
@@ -377,7 +343,11 @@ export class DagsPage extends BasePage {
 
           return newNames.join(",") !== currentNames.join(",");
         },
-        { message: "List did not update after search", timeout: 30_000 },
+        {
+          intervals: [500, 1000, 2000],
+          message: "List did not update after search",
+          timeout: 20_000,
+        },
       )
       .toBe(true);
 
@@ -388,26 +358,26 @@ export class DagsPage extends BasePage {
    * Switch to card view
    */
   public async switchToCardView(): Promise<void> {
-    // Wait for the button to be visible and enabled
-    await expect(this.cardViewButton).toBeVisible({ timeout: 30_000 });
+    await expect(this.cardViewButton).toBeVisible({ timeout: 15_000 });
     await expect(this.cardViewButton).toBeEnabled({ timeout: 10_000 });
     await this.cardViewButton.click();
-    // Wait for card view to be rendered
-    await this.page.waitForTimeout(500);
-    await this.verifyCardViewVisible();
+
+    const cardList = this.page.getByTestId("card-list");
+
+    await expect(cardList).toBeVisible({ timeout: 10_000 });
   }
 
   /**
    * Switch to table view
    */
   public async switchToTableView(): Promise<void> {
-    // Wait for the button to be visible and enabled
-    await expect(this.tableViewButton).toBeVisible({ timeout: 30_000 });
+    await expect(this.tableViewButton).toBeVisible({ timeout: 15_000 });
     await expect(this.tableViewButton).toBeEnabled({ timeout: 10_000 });
     await this.tableViewButton.click();
-    // Wait for table view to be rendered
-    await this.page.waitForTimeout(500);
-    await this.verifyTableViewVisible();
+
+    const table = this.page.getByRole("table");
+
+    await expect(table).toBeVisible({ timeout: 10_000 });
   }
 
   /**
@@ -415,7 +385,7 @@ export class DagsPage extends BasePage {
    */
   public async triggerDag(dagName: string): Promise<string | null> {
     await this.navigateToDagDetail(dagName);
-    await expect(this.triggerButton).toBeVisible({ timeout: 10_000 });
+    await expect(this.triggerButton).toBeVisible({ timeout: 15_000 });
     await this.triggerButton.click();
     const dagRunId = await this.handleTriggerDialog();
 
@@ -423,33 +393,27 @@ export class DagsPage extends BasePage {
   }
 
   /**
-   * Verify card view is visible
+   * Verify card view is visible (throws if not visible)
    */
-  public async verifyCardViewVisible(): Promise<boolean> {
-    const cardList = this.page.locator('[data-testid="card-list"]');
+  public async verifyCardViewVisible(): Promise<void> {
+    const cardList = this.page.getByTestId("card-list");
 
-    try {
-      await cardList.waitFor({ state: "visible", timeout: 10_000 });
-
-      return true;
-    } catch {
-      return false;
-    }
+    await expect(cardList).toBeVisible({ timeout: 10_000 });
   }
 
   /**
    * Navigate to details tab and verify Dag details are displayed correctly
    */
   public async verifyDagDetails(dagName: string): Promise<void> {
-    // Navigate directly to the details URL
     await this.page.goto(`/dags/${dagName}/details`, { waitUntil: "domcontentloaded" });
 
-    // Wait for page to load
-    await this.page.waitForTimeout(1000);
+    await this.waitForSkeletonToDisappear();
 
     // Use getByRole to precisely target the heading element
     // This avoids "strict mode violation" from matching breadcrumbs, file paths, etc.
-    await expect(this.page.getByRole("heading", { name: dagName })).toBeVisible({ timeout: 30_000 });
+    await expect(this.page.getByRole("heading", { name: dagName })).toBeVisible({
+      timeout: 15_000,
+    });
   }
 
   /**
@@ -459,56 +423,57 @@ export class DagsPage extends BasePage {
     await this.waitForDagList();
 
     // Check which view is active
-    const cardList = this.page.locator('[data-testid="card-list"]');
+    const cardList = this.page.getByTestId("card-list");
     const isCardView = await cardList.isVisible();
 
     const dagLink = isCardView
-      ? this.page.locator(`[data-testid="dag-id"]:has-text("${dagId}")`)
-      : this.page.locator(`[data-testid="table-list"] tbody tr td a:has-text("${dagId}")`);
+      ? this.page.getByTestId("dag-id").filter({ hasText: dagId })
+      : this.page.getByTestId("table-list").locator("tbody tr td a").filter({ hasText: dagId });
 
-    try {
-      await dagLink.waitFor({ state: "visible", timeout: 10_000 });
-
-      return true;
-    } catch {
-      return false;
-    }
+    return dagLink.isVisible({ timeout: 10_000 }).catch(() => false);
   }
 
   public async verifyDagRunStatus(dagName: string, dagRunId: string | null): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (dagRunId === null || dagRunId === undefined || dagRunId === "") {
+    if (dagRunId === null || dagRunId === "") {
       return;
     }
 
-    await this.page.goto(DagsPage.getDagRunDetailsUrl(dagName, dagRunId), {
-      timeout: 15_000,
-      waitUntil: "domcontentloaded",
-    });
+    const apiUrl = `/api/v2/dags/${dagName}/dagRuns/${dagRunId}`;
 
-    await this.page.waitForTimeout(2000);
+    // Optimized polling intervals: check more frequently at first, then back off
+    await expect
+      .poll(
+        async () => {
+          try {
+            const response = await this.page.request.get(apiUrl, {
+              timeout: 15_000,
+            });
 
-    const maxWaitTime = 7 * 60 * 1000;
-    const checkInterval = 10_000;
-    const startTime = Date.now();
+            if (!response.ok()) {
+              return "unknown";
+            }
 
-    while (Date.now() - startTime < maxWaitTime) {
-      const currentStatus = await this.getCurrentDagRunStatus();
+            const data = (await response.json()) as DAGRunResponse;
 
-      if (currentStatus === "success") {
-        return;
-      } else if (currentStatus === "failed") {
-        throw new Error(`Dag run failed: ${dagRunId}`);
-      }
+            return data.state;
+          } catch {
+            return "unknown";
+          }
+        },
+        {
+          intervals: [2000, 3000, 5000, 10_000, 15_000],
+          message: `Waiting for Dag run ${dagRunId} to complete`,
+          timeout: 5 * 60 * 1000,
+        },
+      )
+      .toMatch(/^(success|failed)$/);
 
-      await this.page.waitForTimeout(checkInterval);
+    const finalResponse = await this.page.request.get(apiUrl);
+    const finalData = (await finalResponse.json()) as DAGRunResponse;
 
-      await this.page.reload({ waitUntil: "domcontentloaded" });
-
-      await this.page.waitForTimeout(2000);
+    if (finalData.state === "failed") {
+      throw new Error(`Dag run failed: ${dagRunId}`);
     }
-
-    throw new Error(`Dag run did not complete within 5 minutes: ${dagRunId}`);
   }
 
   /**
@@ -519,66 +484,30 @@ export class DagsPage extends BasePage {
   }
 
   /**
-   * Verify table view is visible
+   * Verify table view is visible (throws if not visible)
    */
-  public async verifyTableViewVisible(): Promise<boolean> {
-    const table = this.page.locator("table");
+  public async verifyTableViewVisible(): Promise<void> {
+    const table = this.page.getByRole("table");
 
-    try {
-      await table.waitFor({ state: "visible", timeout: 10_000 });
-
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  private async getCurrentDagRunStatus(): Promise<string> {
-    try {
-      const statusText = await this.stateElement.textContent().catch(() => "");
-      const status = statusText?.trim() ?? "";
-
-      switch (status) {
-        case "Failed":
-          return "failed";
-        case "Queued":
-          return "queued";
-        case "Running":
-          return "running";
-        case "Success":
-          return "success";
-        default:
-          return "unknown";
-      }
-    } catch {
-      return "unknown";
-    }
+    await expect(table).toBeVisible({ timeout: 10_000 });
   }
 
   private async handleTriggerDialog(): Promise<string | null> {
-    await this.page.waitForTimeout(1000);
-
     const responsePromise = this.page
-
       .waitForResponse(
         (response) => {
           const url = response.url();
-
           const method = response.request().method();
 
-          return (
-            method === "POST" && Boolean(url.includes("dagRuns")) && Boolean(!url.includes("hitlDetails"))
-          );
+          return method === "POST" && url.includes("dagRuns") && !url.includes("hitlDetails");
         },
-        { timeout: 10_000 },
+        { timeout: 15_000 },
       )
-
       .catch(() => undefined);
 
-    await expect(this.confirmButton).toBeVisible({ timeout: 8000 });
-
-    await this.page.waitForTimeout(2000);
-    await this.confirmButton.click({ force: true });
+    await expect(this.confirmButton).toBeVisible({ timeout: 10_000 });
+    await expect(this.confirmButton).toBeEnabled({ timeout: 5000 });
+    await this.confirmButton.click();
 
     const apiResponse = await responsePromise;
 
@@ -587,7 +516,7 @@ export class DagsPage extends BasePage {
         const responseBody = await apiResponse.text();
         const responseJson = JSON.parse(responseBody) as DAGRunResponse;
 
-        if (Boolean(responseJson.dag_run_id)) {
+        if (responseJson.dag_run_id) {
           return responseJson.dag_run_id;
         }
       } catch {
@@ -601,25 +530,26 @@ export class DagsPage extends BasePage {
 
   private async selectDropdownOption(filter: Locator, value: string): Promise<void> {
     await filter.click();
-    await this.page.locator(`div[role="option"][data-value="${value}"]`).dispatchEvent("click");
-    await this.page.waitForTimeout(500);
+
+    const option = this.page.locator(`div[role="option"][data-value="${value}"]`);
+
+    await option.click({ timeout: 5000 });
   }
 
   /**
-   * Wait for DAG list to be rendered
+   * Wait for Dag list to be rendered
    */
   private async waitForDagList(): Promise<void> {
     // Define multiple possible UI states: Card View, Table View, or Empty State.
     // Use regex (/no dag/i) to handle case and singular/plural variations
     // (e.g. "No Dag found", "No Dags found", "NO DAG FOUND").
-    const cardList = this.page.locator('[data-testid="card-list"]');
-    const tableList = this.page.locator('[data-testid="table-list"]');
-    const noDagFound = this.page.locator("text=/no dag/i");
-    const fallbackTable = this.page.locator("table");
+    const cardList = this.page.getByTestId("card-list");
+    const tableList = this.page.getByTestId("table-list");
+    const noDagFound = this.page.getByText(/no dag/i);
+    const fallbackTable = this.page.getByRole("table");
 
-    // Wait for any of these elements to appear
     await expect(cardList.or(tableList).or(noDagFound).or(fallbackTable)).toBeVisible({
-      timeout: 30_000,
+      timeout: 20_000,
     });
 
     // If empty state is shown, consider the list as successfully rendered
@@ -627,30 +557,36 @@ export class DagsPage extends BasePage {
       return;
     }
 
-    // Wait for loading to complete (skeletons to disappear)
-    const skeleton = this.page.locator('[data-testid="skeleton"]');
+    await this.waitForSkeletonToDisappear(15_000);
 
-    await expect(skeleton).toHaveCount(0, { timeout: 30_000 });
+    if (await noDagFound.isVisible().catch(() => false)) {
+      return;
+    }
 
-    // Now wait for actual DAG content based on current view
     const isCardView = await cardList.isVisible().catch(() => false);
 
     if (isCardView) {
-      // Card view: wait for dag-id elements
-      const dagCards = this.page.locator('[data-testid="dag-id"]');
+      const dagCards = this.page.getByTestId("dag-id");
 
-      await dagCards.first().waitFor({ state: "visible", timeout: 30_000 });
+      await expect(dagCards.first().or(noDagFound)).toBeVisible({
+        timeout: 15_000,
+      });
     } else {
-      // Table view: prefer table-list testid, fallback to any <table> element
       const rowsInTableList = tableList.locator("tbody tr");
+      const anyTableRows = fallbackTable.locator("tbody tr");
 
-      if ((await rowsInTableList.count().catch(() => 0)) > 0) {
-        await rowsInTableList.first().waitFor({ state: "visible", timeout: 30_000 });
-      } else {
-        const anyTableRows = fallbackTable.locator("tbody tr");
-
-        await anyTableRows.first().waitFor({ state: "visible", timeout: 30_000 });
-      }
+      await expect(rowsInTableList.first().or(anyTableRows.first()).or(noDagFound)).toBeVisible({
+        timeout: 15_000,
+      });
     }
+  }
+
+  /**
+   * Wait for skeleton loaders to disappear
+   */
+  private async waitForSkeletonToDisappear(timeout: number = 10_000): Promise<void> {
+    const skeleton = this.page.getByTestId("skeleton");
+
+    await expect(skeleton).toHaveCount(0, { timeout });
   }
 }

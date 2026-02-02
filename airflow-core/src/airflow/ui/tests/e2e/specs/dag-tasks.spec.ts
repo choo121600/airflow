@@ -27,14 +27,17 @@ test.describe("Dag Tasks Tab", () => {
     test.setTimeout(7 * 60 * 1000);
 
     const context = await browser.newContext({ storageState: AUTH_FILE });
-    const page = await context.newPage();
-    const dagPage = new DagsPage(page);
 
-    const dagRunId = await dagPage.triggerDag(testDagId);
+    try {
+      const page = await context.newPage();
+      const dagPage = new DagsPage(page);
 
-    await dagPage.verifyDagRunStatus(testDagId, dagRunId);
+      const dagRunId = await dagPage.triggerDag(testDagId);
 
-    await context.close();
+      await dagPage.verifyDagRunStatus(testDagId, dagRunId);
+    } finally {
+      await context.close();
+    }
   });
   test("verify tasks tab displays task list", async ({ page }) => {
     const dagPage = new DagsPage(page);
@@ -57,15 +60,13 @@ test.describe("Dag Tasks Tab", () => {
     await dagPage.navigateToDagTasks(testDagId);
 
     const firstTaskLink = dagPage.taskRows.first().locator("a").first();
-    const taskName = await firstTaskLink.textContent();
+    const taskName = (await firstTaskLink.textContent()) ?? "";
 
-    if (taskName === null) {
-      throw new Error("Task name not found");
-    }
+    expect(taskName).toBeTruthy();
 
     await dagPage.searchBox.fill(taskName);
 
-    await expect.poll(() => dagPage.taskRows.count(), { timeout: 20_000 }).toBe(1);
+    await expect(dagPage.taskRows).toHaveCount(1, { timeout: 20_000 });
     await expect(dagPage.taskRows).toContainText(taskName);
   });
 
@@ -77,27 +78,20 @@ test.describe("Dag Tasks Tab", () => {
     const operators = await dagPage.getFilterOptions(dagPage.operatorFilter);
 
     expect(operators.length).toBeGreaterThan(0);
+    expect(operators.every((op) => op.length > 0)).toBe(true);
 
     for (const operator of operators) {
       await dagPage.filterByOperator(operator);
 
-      await expect
-        .poll(
-          async () => {
-            const count = await dagPage.taskRows.count();
+      await expect(async () => {
+        const allRows = await dagPage.taskRows.all();
 
-            if (count === 0) return false;
-            for (let i = 0; i < count; i++) {
-              const text = await dagPage.taskRows.nth(i).textContent();
+        expect(allRows.length).toBeGreaterThan(0);
 
-              if (!text?.includes(operator)) return false;
-            }
-
-            return true;
-          },
-          { timeout: 20_000 },
-        )
-        .toBeTruthy();
+        for (const row of allRows) {
+          await expect(row).toContainText(operator);
+        }
+      }).toPass({ timeout: 20_000 });
 
       await dagPage.navigateToDagTasks(testDagId);
     }
@@ -111,27 +105,20 @@ test.describe("Dag Tasks Tab", () => {
     const rules = await dagPage.getFilterOptions(dagPage.triggerRuleFilter);
 
     expect(rules.length).toBeGreaterThan(0);
+    expect(rules.every((rule) => rule.length > 0)).toBe(true);
 
     for (const rule of rules) {
       await dagPage.filterByTriggerRule(rule);
 
-      await expect
-        .poll(
-          async () => {
-            const count = await dagPage.taskRows.count();
+      await expect(async () => {
+        const allRows = await dagPage.taskRows.all();
 
-            if (count === 0) return false;
-            for (let i = 0; i < count; i++) {
-              const text = await dagPage.taskRows.nth(i).textContent();
+        expect(allRows.length).toBeGreaterThan(0);
 
-              if (!text?.includes(rule)) return false;
-            }
-
-            return true;
-          },
-          { timeout: 20_000 },
-        )
-        .toBeTruthy();
+        for (const row of allRows) {
+          await expect(row).toContainText(rule);
+        }
+      }).toPass({ timeout: 20_000 });
 
       await dagPage.navigateToDagTasks(testDagId);
     }
@@ -148,10 +135,14 @@ test.describe("Dag Tasks Tab", () => {
       return;
     }
 
-    for (const retries of retriesOptions) {
+    for (const [index, retries] of retriesOptions.entries()) {
       await dagPage.filterByRetries(retries);
-      await expect(dagPage.taskRows.first()).toBeVisible();
-      await dagPage.navigateToDagTasks(testDagId);
+      await expect(dagPage.taskRows.first()).toBeVisible({ timeout: 20_000 });
+
+      // Only navigate back if not the last iteration
+      if (index < retriesOptions.length - 1) {
+        await dagPage.navigateToDagTasks(testDagId);
+      }
     }
   });
   test("verify click task to show details", async ({ page }) => {
