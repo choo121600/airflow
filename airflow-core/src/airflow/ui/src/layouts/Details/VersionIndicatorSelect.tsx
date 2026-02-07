@@ -60,12 +60,8 @@ export const VersionIndicatorSelect = ({ onChange, value }: VersionIndicatorSele
                 <FiGitCommit color="var(--chakra-colors-orange-focus-ring)" />
               )}
               {(value === VersionIndicatorDisplayOptions.DAG ||
-                value === VersionIndicatorDisplayOptions.ALL) && (
-                <Circle bg="orange.focusRing" size="8px" />
-              )}
-              {translate(
-                showVersionIndicatorOptions.items.find((item) => item.value === value)?.label ?? "",
-              )}
+                value === VersionIndicatorDisplayOptions.ALL) && <Circle bg="orange.focusRing" size="8px" />}
+              {translate(showVersionIndicatorOptions.items.find((item) => item.value === value)?.label ?? "")}
             </Flex>
           </Select.ValueText>
         </Select.Trigger>

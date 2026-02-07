@@ -483,6 +483,7 @@ export const PanelButtons = ({
                       </>
                     )}
                     <VStack alignItems="flex-start" px={1}>
+                      {/* eslint-disable-next-line react/jsx-max-depth */}
                       <VersionIndicatorSelect
                         onChange={setShowVersionIndicatorMode}
                         value={showVersionIndicatorMode}
