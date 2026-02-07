@@ -21,7 +21,6 @@ import { useParams, useSearchParams } from "react-router-dom";
 
 import { RunTypeIcon } from "src/components/RunTypeIcon";
 import { BundleVersionIndicator, DagVersionIndicator } from "src/components/ui/VersionIndicator";
-import type { VersionIndicatorDisplayOption } from "src/constants/showVersionIndicatorOptions";
 import { VersionIndicatorDisplayOptions } from "src/constants/showVersionIndicatorOptions";
 import { useHover } from "src/context/hover";
 
@@ -34,7 +33,7 @@ type Props = {
   readonly max: number;
   readonly onClick?: () => void;
   readonly run: GridRunWithVersionFlags;
-  readonly showVersionIndicatorMode?: VersionIndicatorDisplayOption;
+  readonly showVersionIndicatorMode?: VersionIndicatorDisplayOptions;
 };
 
 export const Bar = ({ max, onClick, run, showVersionIndicatorMode }: Props) => {

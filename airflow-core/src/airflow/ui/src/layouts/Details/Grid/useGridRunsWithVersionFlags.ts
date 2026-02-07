@@ -19,7 +19,6 @@
 import { useMemo } from "react";
 
 import type { GridRunsResponse } from "openapi/requests";
-import type { VersionIndicatorDisplayOption } from "src/constants/showVersionIndicatorOptions";
 import { VersionIndicatorDisplayOptions } from "src/constants/showVersionIndicatorOptions";
 
 export type GridRunWithVersionFlags = {
@@ -29,7 +28,7 @@ export type GridRunWithVersionFlags = {
 
 type UseGridRunsWithVersionFlagsParams = {
   gridRuns: Array<GridRunsResponse> | undefined;
-  showVersionIndicatorMode?: VersionIndicatorDisplayOption;
+  showVersionIndicatorMode?: VersionIndicatorDisplayOptions;
 };
 
 // Hook to calculate version change flags for grid runs.

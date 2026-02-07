@@ -38,6 +38,39 @@ export const BundleVersionIndicator = ({ bundleVersion }: BundleVersionIndicator
   );
 };
 
+const CONTAINER_STYLES = {
+  horizontal: {
+    height: 0.5,
+    left: "50%",
+    top: 0,
+    transform: "translate(-50%, -50%)",
+    width: 4.5,
+  },
+  vertical: {
+    height: 104,
+    left: -1.25,
+    top: -1.5,
+    width: 0.5,
+  },
+} as const;
+
+const CIRCLE_STYLES = {
+  horizontal: {
+    height: 1.5,
+    left: "50%",
+    top: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 1.5,
+  },
+  vertical: {
+    height: 1.5,
+    left: "50%",
+    top: -1,
+    transform: "translateX(-50%)",
+    width: 1.5,
+  },
+} as const;
+
 type DagVersionIndicatorProps = {
   readonly dagVersionNumber: number | undefined;
   readonly orientation?: "horizontal" | "vertical";
@@ -48,42 +81,8 @@ export const DagVersionIndicator = ({
   orientation = "vertical",
 }: DagVersionIndicatorProps) => {
   const isVertical = orientation === "vertical";
-
-  const containerStyles = {
-    horizontal: {
-      height: 0.5,
-      left: "50%",
-      top: 0,
-      transform: "translate(-50%, -50%)",
-      width: 4.5,
-    },
-    vertical: {
-      height: 104,
-      left: -1.25,
-      top: -1.5,
-      width: 0.5,
-    },
-  } as const;
-
-  const circleStyles = {
-    horizontal: {
-      height: 1.5,
-      left: "50%",
-      top: "50%",
-      transform: "translate(-50%, -50%)",
-      width: 1.5,
-    },
-    vertical: {
-      height: 1.5,
-      left: "50%",
-      top: -1,
-      transform: "translateX(-50%)",
-      width: 1.5,
-    },
-  } as const;
-
-  const currentContainerStyle = containerStyles[orientation];
-  const currentCircleStyle = circleStyles[orientation];
+  const currentContainerStyle = CONTAINER_STYLES[orientation];
+  const currentCircleStyle = CIRCLE_STYLES[orientation];
 
   return (
     <Box

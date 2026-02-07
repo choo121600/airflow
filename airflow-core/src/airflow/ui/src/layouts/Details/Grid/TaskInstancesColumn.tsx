@@ -24,7 +24,6 @@ import { useParams } from "react-router-dom";
 import type { GridRunsResponse } from "openapi/requests";
 import type { LightGridTaskInstanceSummary } from "openapi/requests/types.gen";
 import { DagVersionIndicator } from "src/components/ui/VersionIndicator";
-import type { VersionIndicatorDisplayOption } from "src/constants/showVersionIndicatorOptions";
 import { VersionIndicatorDisplayOptions } from "src/constants/showVersionIndicatorOptions";
 import { useHover } from "src/context/hover";
 import { useGridTiSummaries } from "src/queries/useGridTISummaries.ts";
@@ -36,7 +35,7 @@ type Props = {
   readonly nodes: Array<GridTask>;
   readonly onCellClick?: () => void;
   readonly run: GridRunsResponse;
-  readonly showVersionIndicatorMode?: VersionIndicatorDisplayOption;
+  readonly showVersionIndicatorMode?: VersionIndicatorDisplayOptions;
   readonly virtualItems?: Array<VirtualItem>;
 };
 

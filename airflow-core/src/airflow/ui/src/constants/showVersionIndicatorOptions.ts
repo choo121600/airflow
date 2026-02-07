@@ -25,11 +25,9 @@ export enum VersionIndicatorDisplayOptions {
   NONE = "none",
 }
 
-export type VersionIndicatorDisplayOption = VersionIndicatorDisplayOptions;
-
 const validOptions = new Set<string>(Object.values(VersionIndicatorDisplayOptions));
 
-export const isVersionIndicatorDisplayOption = (value: unknown): value is VersionIndicatorDisplayOption =>
+export const isVersionIndicatorDisplayOption = (value: unknown): value is VersionIndicatorDisplayOptions =>
   typeof value === "string" && validOptions.has(value);
 
 export const showVersionIndicatorOptions = createListCollection({

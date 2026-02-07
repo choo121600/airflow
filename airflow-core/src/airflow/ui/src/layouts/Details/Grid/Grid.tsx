@@ -26,7 +26,7 @@ import { FiChevronsRight } from "react-icons/fi";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 
 import type { DagRunState, DagRunType, GridRunsResponse } from "openapi/requests";
-import type { VersionIndicatorDisplayOption } from "src/constants/showVersionIndicatorOptions";
+import type { VersionIndicatorDisplayOptions } from "src/constants/showVersionIndicatorOptions";
 import { useOpenGroups } from "src/context/openGroups";
 import { NavigationModes, useNavigation } from "src/hooks/navigation";
 import { useGridRuns } from "src/queries/useGridRuns.ts";
@@ -54,7 +54,7 @@ type Props = {
   readonly limit: number;
   readonly runType?: DagRunType | undefined;
   readonly showGantt?: boolean;
-  readonly showVersionIndicatorMode?: VersionIndicatorDisplayOption;
+  readonly showVersionIndicatorMode?: VersionIndicatorDisplayOptions;
   readonly triggeringUser?: string | undefined;
 };
 
