@@ -480,15 +480,14 @@ export const PanelButtons = ({
                             </Checkbox>
                           </VStack>
                         ) : undefined}
+                        <VStack alignItems="flex-start" px={1}>
+                          <VersionIndicatorSelect
+                            onChange={setShowVersionIndicatorMode}
+                            value={showVersionIndicatorMode}
+                          />
+                        </VStack>
                       </>
                     )}
-                    <VStack alignItems="flex-start" px={1}>
-                      {/* eslint-disable-next-line react/jsx-max-depth */}
-                      <VersionIndicatorSelect
-                        onChange={setShowVersionIndicatorMode}
-                        value={showVersionIndicatorMode}
-                      />
-                    </VStack>
                   </Popover.Body>
                 </Popover.Content>
               </Popover.Positioner>
