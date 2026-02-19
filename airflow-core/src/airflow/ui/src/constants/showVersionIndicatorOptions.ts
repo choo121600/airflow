@@ -20,8 +20,8 @@ import { createListCollection } from "@chakra-ui/react";
 
 export enum VersionIndicatorDisplayOptions {
   ALL = "all",
-  BUNDLE = "bundle",
-  DAG = "dag",
+  BUNDLE_VERSION = "bundle",
+  DAG_VERSION = "dag",
   NONE = "none",
 }
 
