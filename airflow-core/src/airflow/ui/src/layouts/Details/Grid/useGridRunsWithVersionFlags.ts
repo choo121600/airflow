@@ -48,7 +48,7 @@ export const useGridRunsWithVersionFlags = ({
     }
 
     return gridRuns.map((run, index) => {
-      const prevRun = gridRuns[index + 1];
+      const nextRun = gridRuns[index + 1];
 
       const isBundleVersionChange = Boolean(
         prevRun &&
