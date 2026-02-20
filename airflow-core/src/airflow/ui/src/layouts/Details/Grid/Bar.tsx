@@ -20,11 +20,11 @@ import { Flex, Box } from "@chakra-ui/react";
 import { useParams, useSearchParams } from "react-router-dom";
 
 import { RunTypeIcon } from "src/components/RunTypeIcon";
-import { BundleVersionIndicator, DagVersionIndicator } from "src/components/ui/VersionIndicator";
-import { VersionIndicatorDisplayOptions } from "src/constants/showVersionIndicatorOptions";
+import { VersionIndicatorOptions } from "src/constants/showVersionIndicatorOptions";
 import { useHover } from "src/context/hover";
 
 import { GridButton } from "./GridButton";
+import { BundleVersionIndicator, DagVersionIndicator } from "./VersionIndicator";
 import type { GridRunWithVersionFlags } from "./useGridRunsWithVersionFlags";
 
 const BAR_HEIGHT = 100;
@@ -33,7 +33,7 @@ type Props = {
   readonly max: number;
   readonly onClick?: () => void;
   readonly run: GridRunWithVersionFlags;
-  readonly showVersionIndicatorMode?: VersionIndicatorDisplayOptions;
+  readonly showVersionIndicatorMode?: VersionIndicatorOptions;
 };
 
 export const Bar = ({ max, onClick, run, showVersionIndicatorMode }: Props) => {
@@ -57,13 +57,13 @@ export const Bar = ({ max, onClick, run, showVersionIndicatorMode }: Props) => {
       transition="background-color 0.2s"
     >
       {run.isBundleVersionChange &&
-      (showVersionIndicatorMode === VersionIndicatorDisplayOptions.BUNDLE ||
-        showVersionIndicatorMode === VersionIndicatorDisplayOptions.ALL) ? (
+      (showVersionIndicatorMode === VersionIndicatorOptions.BUNDLE_VERSION ||
+        showVersionIndicatorMode === VersionIndicatorOptions.ALL) ? (
         <BundleVersionIndicator bundleVersion={run.bundle_version ?? undefined} />
       ) : undefined}
       {run.isDagVersionChange &&
-      (showVersionIndicatorMode === VersionIndicatorDisplayOptions.DAG ||
-        showVersionIndicatorMode === VersionIndicatorDisplayOptions.ALL) ? (
+      (showVersionIndicatorMode === VersionIndicatorOptions.DAG_VERSION ||
+        showVersionIndicatorMode === VersionIndicatorOptions.ALL) ? (
         <DagVersionIndicator dagVersionNumber={run.dag_version_number ?? undefined} orientation="vertical" />
       ) : undefined}
 

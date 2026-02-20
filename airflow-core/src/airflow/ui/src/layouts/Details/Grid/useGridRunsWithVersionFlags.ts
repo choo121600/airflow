@@ -19,7 +19,7 @@
 import { useMemo } from "react";
 
 import type { GridRunsResponse } from "openapi/requests";
-import { VersionIndicatorDisplayOptions } from "src/constants/showVersionIndicatorOptions";
+import { VersionIndicatorOptions } from "src/constants/showVersionIndicatorOptions";
 
 export type GridRunWithVersionFlags = {
   isBundleVersionChange: boolean;
@@ -28,7 +28,7 @@ export type GridRunWithVersionFlags = {
 
 type UseGridRunsWithVersionFlagsParams = {
   gridRuns: Array<GridRunsResponse> | undefined;
-  showVersionIndicatorMode?: VersionIndicatorDisplayOptions;
+  showVersionIndicatorMode?: VersionIndicatorOptions;
 };
 
 // Hook to calculate version change flags for grid runs.
@@ -36,7 +36,7 @@ export const useGridRunsWithVersionFlags = ({
   gridRuns,
   showVersionIndicatorMode,
 }: UseGridRunsWithVersionFlagsParams): Array<GridRunWithVersionFlags> | undefined => {
-  const isVersionIndicatorEnabled = showVersionIndicatorMode !== VersionIndicatorDisplayOptions.NONE;
+  const isVersionIndicatorEnabled = showVersionIndicatorMode !== VersionIndicatorOptions.NONE;
 
   return useMemo(() => {
     if (!gridRuns) {
@@ -51,17 +51,17 @@ export const useGridRunsWithVersionFlags = ({
       const nextRun = gridRuns[index + 1];
 
       const isBundleVersionChange = Boolean(
-        prevRun &&
+        nextRun &&
         run.bundle_version !== null &&
-        prevRun.bundle_version !== null &&
-        run.bundle_version !== prevRun.bundle_version,
+        nextRun.bundle_version !== null &&
+        run.bundle_version !== nextRun.bundle_version,
       );
 
       const isDagVersionChange = Boolean(
-        prevRun &&
+        nextRun &&
         run.dag_version_number !== null &&
-        prevRun.dag_version_number !== null &&
-        run.dag_version_number !== prevRun.dag_version_number,
+        nextRun.dag_version_number !== null &&
+        run.dag_version_number !== nextRun.dag_version_number,
       );
 
       return { ...run, isBundleVersionChange, isDagVersionChange };

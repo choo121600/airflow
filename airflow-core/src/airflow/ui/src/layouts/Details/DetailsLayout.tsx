@@ -50,7 +50,7 @@ import {
   showGanttKey,
   triggeringUserFilterKey,
 } from "src/constants/localStorage";
-import { VersionIndicatorDisplayOptions } from "src/constants/showVersionIndicatorOptions";
+import { VersionIndicatorOptions } from "src/constants/showVersionIndicatorOptions";
 import { HoverProvider } from "src/context/hover";
 import { OpenGroupsProvider } from "src/context/openGroups";
 
@@ -90,11 +90,10 @@ export const DetailsLayout = ({ children, error, isLoading, tabs }: Props) => {
 
   const [showGantt, setShowGantt] = useLocalStorage<boolean>(showGanttKey(dagId), false);
   // Global setting: applies to all Dags (intentionally not scoped to dagId)
-  const [showVersionIndicatorMode, setShowVersionIndicatorMode] =
-    useLocalStorage<VersionIndicatorDisplayOptions>(
-      `version_indicator_display_mode`,
-      VersionIndicatorDisplayOptions.ALL,
-    );
+  const [showVersionIndicatorMode, setShowVersionIndicatorMode] = useLocalStorage<VersionIndicatorOptions>(
+    `version_indicator_display_mode`,
+    VersionIndicatorOptions.ALL,
+  );
   const { fitView, getZoom } = useReactFlow();
   const { data: warningData } = useDagWarningServiceListDagWarnings({ dagId });
   const { onClose, onOpen, open } = useDisclosure();

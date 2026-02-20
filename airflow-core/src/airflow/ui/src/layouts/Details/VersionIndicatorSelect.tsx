@@ -21,14 +21,14 @@ import { useTranslation } from "react-i18next";
 import { FiGitCommit } from "react-icons/fi";
 
 import {
-  isVersionIndicatorDisplayOption,
+  isVersionIndicatorOption,
   showVersionIndicatorOptions,
-  VersionIndicatorDisplayOptions,
+  VersionIndicatorOptions,
 } from "src/constants/showVersionIndicatorOptions";
 
 type VersionIndicatorSelectProps = {
-  readonly onChange: (value: VersionIndicatorDisplayOptions) => void;
-  readonly value: VersionIndicatorDisplayOptions;
+  readonly onChange: (value: VersionIndicatorOptions) => void;
+  readonly value: VersionIndicatorOptions;
 };
 
 export const VersionIndicatorSelect = ({ onChange, value }: VersionIndicatorSelectProps) => {
@@ -37,7 +37,7 @@ export const VersionIndicatorSelect = ({ onChange, value }: VersionIndicatorSele
   const handleChange = (event: SelectValueChangeDetails<{ label: string; value: Array<string> }>) => {
     const [selectedDisplayMode] = event.value;
 
-    if (isVersionIndicatorDisplayOption(selectedDisplayMode)) {
+    if (isVersionIndicatorOption(selectedDisplayMode)) {
       onChange(selectedDisplayMode);
     }
   };
@@ -55,12 +55,13 @@ export const VersionIndicatorSelect = ({ onChange, value }: VersionIndicatorSele
         <Select.Trigger>
           <Select.ValueText>
             <Flex alignItems="center" gap={1}>
-              {(value === VersionIndicatorDisplayOptions.BUNDLE ||
-                value === VersionIndicatorDisplayOptions.ALL) && (
+              {(value === VersionIndicatorOptions.BUNDLE_VERSION ||
+                value === VersionIndicatorOptions.ALL) && (
                 <FiGitCommit color="var(--chakra-colors-orange-focus-ring)" />
               )}
-              {(value === VersionIndicatorDisplayOptions.DAG ||
-                value === VersionIndicatorDisplayOptions.ALL) && <Circle bg="orange.focusRing" size="8px" />}
+              {(value === VersionIndicatorOptions.DAG_VERSION || value === VersionIndicatorOptions.ALL) && (
+                <Circle bg="orange.focusRing" size="8px" />
+              )}
               {translate(showVersionIndicatorOptions.items.find((item) => item.value === value)?.label ?? "")}
             </Flex>
           </Select.ValueText>
@@ -74,12 +75,12 @@ export const VersionIndicatorSelect = ({ onChange, value }: VersionIndicatorSele
           {showVersionIndicatorOptions.items.map((option) => (
             <Select.Item item={option} key={option.value}>
               <Flex alignItems="center" gap={1}>
-                {(option.value === VersionIndicatorDisplayOptions.BUNDLE ||
-                  option.value === VersionIndicatorDisplayOptions.ALL) && (
+                {(option.value === VersionIndicatorOptions.BUNDLE_VERSION ||
+                  option.value === VersionIndicatorOptions.ALL) && (
                   <FiGitCommit color="var(--chakra-colors-orange-focus-ring)" />
                 )}
-                {(option.value === VersionIndicatorDisplayOptions.DAG ||
-                  option.value === VersionIndicatorDisplayOptions.ALL) && (
+                {(option.value === VersionIndicatorOptions.DAG_VERSION ||
+                  option.value === VersionIndicatorOptions.ALL) && (
                   <Circle bg="orange.focusRing" size="8px" />
                 )}
                 {translate(option.label)}

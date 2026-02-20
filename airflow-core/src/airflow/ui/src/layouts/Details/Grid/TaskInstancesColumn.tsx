@@ -18,24 +18,23 @@
  */
 import { Box } from "@chakra-ui/react";
 import type { VirtualItem } from "@tanstack/react-virtual";
-import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import type { GridRunsResponse } from "openapi/requests";
 import type { LightGridTaskInstanceSummary } from "openapi/requests/types.gen";
-import { DagVersionIndicator } from "src/components/ui/VersionIndicator";
-import { VersionIndicatorDisplayOptions } from "src/constants/showVersionIndicatorOptions";
+import { VersionIndicatorOptions } from "src/constants/showVersionIndicatorOptions";
 import { useHover } from "src/context/hover";
 import { useGridTiSummaries } from "src/queries/useGridTISummaries.ts";
 
 import { GridTI } from "./GridTI";
+import { DagVersionIndicator } from "./VersionIndicator";
 import type { GridTask } from "./utils";
 
 type Props = {
   readonly nodes: Array<GridTask>;
   readonly onCellClick?: () => void;
   readonly run: GridRunsResponse;
-  readonly showVersionIndicatorMode?: VersionIndicatorDisplayOptions;
+  readonly showVersionIndicatorMode?: VersionIndicatorOptions;
   readonly virtualItems?: Array<VirtualItem>;
 };
 
@@ -61,27 +60,18 @@ export const TaskInstancesColumn = ({
   const itemsToRender =
     virtualItems ?? nodes.map((_, index) => ({ index, size: ROW_HEIGHT, start: index * ROW_HEIGHT }));
 
-  const taskInstances = useMemo(
-    () => gridTISummaries?.task_instances ?? [],
-    [gridTISummaries?.task_instances],
+  const taskInstances = gridTISummaries?.task_instances ?? [];
+
+  const taskInstanceMap = new Map<string, LightGridTaskInstanceSummary>();
+
+  for (const ti of taskInstances) {
+    taskInstanceMap.set(ti.task_id, ti);
+  }
+
+  const versionNumbers = new Set(
+    taskInstances.map((ti) => ti.dag_version_number).filter((vn) => vn !== null && vn !== undefined),
   );
-  const taskInstanceMap = useMemo(() => {
-    const map = new Map<string, LightGridTaskInstanceSummary>();
-
-    for (const ti of taskInstances) {
-      map.set(ti.task_id, ti);
-    }
-
-    return map;
-  }, [taskInstances]);
-
-  const hasMixedVersions = useMemo(() => {
-    const versionNumbers = new Set(
-      taskInstances.map((ti) => ti.dag_version_number).filter((vn) => vn !== null && vn !== undefined),
-    );
-
-    return versionNumbers.size > 1;
-  }, [taskInstances]);
+  const hasMixedVersions = versionNumbers.size > 1;
 
   const isHovered = hoveredRunId === run.run_id;
 
@@ -124,8 +114,8 @@ export const TaskInstancesColumn = ({
 
         if (
           hasMixedVersions &&
-          (showVersionIndicatorMode === VersionIndicatorDisplayOptions.DAG ||
-            showVersionIndicatorMode === VersionIndicatorDisplayOptions.ALL) &&
+          (showVersionIndicatorMode === VersionIndicatorOptions.DAG_VERSION ||
+            showVersionIndicatorMode === VersionIndicatorOptions.ALL) &&
           idx > 0
         ) {
           const prevVirtualItem = itemsToRender[idx - 1];

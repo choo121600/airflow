@@ -18,29 +18,29 @@
  */
 import { createListCollection } from "@chakra-ui/react";
 
-export enum VersionIndicatorDisplayOptions {
+export enum VersionIndicatorOptions {
   ALL = "all",
   BUNDLE_VERSION = "bundle",
   DAG_VERSION = "dag",
   NONE = "none",
 }
 
-const validOptions = new Set<string>(Object.values(VersionIndicatorDisplayOptions));
+const validOptions = new Set<string>(Object.values(VersionIndicatorOptions));
 
-export const isVersionIndicatorDisplayOption = (value: unknown): value is VersionIndicatorDisplayOptions =>
+export const isVersionIndicatorOption = (value: unknown): value is VersionIndicatorOptions =>
   typeof value === "string" && validOptions.has(value);
 
 export const showVersionIndicatorOptions = createListCollection({
   items: [
-    { label: "dag:panel.showVersionIndicator.options.showAll", value: VersionIndicatorDisplayOptions.ALL },
+    { label: "dag:panel.showVersionIndicator.options.showAll", value: VersionIndicatorOptions.ALL },
     {
       label: "dag:panel.showVersionIndicator.options.showBundleVersion",
-      value: VersionIndicatorDisplayOptions.BUNDLE,
+      value: VersionIndicatorOptions.BUNDLE_VERSION,
     },
     {
       label: "dag:panel.showVersionIndicator.options.showDagVersion",
-      value: VersionIndicatorDisplayOptions.DAG,
+      value: VersionIndicatorOptions.DAG_VERSION,
     },
-    { label: "dag:panel.showVersionIndicator.options.hideAll", value: VersionIndicatorDisplayOptions.NONE },
+    { label: "dag:panel.showVersionIndicator.options.hideAll", value: VersionIndicatorOptions.NONE },
   ],
 });
