@@ -31,6 +31,12 @@ type UseGridRunsWithVersionFlagsParams = {
   showVersionIndicatorMode?: VersionIndicatorOptions;
 };
 
+export const getMaxVersionNumber = (run: GridRunsResponse): number | undefined =>
+  run.dag_versions?.at(-1)?.version_number;
+
+export const getBundleVersion = (run: GridRunsResponse): string | null | undefined =>
+  run.dag_versions?.at(-1)?.bundle_version;
+
 // Hook to calculate version change flags for grid runs.
 export const useGridRunsWithVersionFlags = ({
   gridRuns,
@@ -50,19 +56,17 @@ export const useGridRunsWithVersionFlags = ({
     return gridRuns.map((run, index) => {
       const nextRun = gridRuns[index + 1];
 
-      const isBundleVersionChange = Boolean(
-        nextRun &&
-        run.bundle_version !== null &&
-        nextRun.bundle_version !== null &&
-        run.bundle_version !== nextRun.bundle_version,
-      );
+      const currentBundleVersion = getBundleVersion(run);
+      const nextBundleVersion = nextRun ? getBundleVersion(nextRun) : undefined;
+      const isBundleVersionChange =
+        currentBundleVersion !== undefined &&
+        nextBundleVersion !== undefined &&
+        currentBundleVersion !== nextBundleVersion;
 
-      const isDagVersionChange = Boolean(
-        nextRun &&
-        run.dag_version_number !== null &&
-        nextRun.dag_version_number !== null &&
-        run.dag_version_number !== nextRun.dag_version_number,
-      );
+      const currentVersion = getMaxVersionNumber(run);
+      const nextVersion = nextRun ? getMaxVersionNumber(nextRun) : undefined;
+      const isDagVersionChange =
+        currentVersion !== undefined && nextVersion !== undefined && currentVersion !== nextVersion;
 
       return { ...run, isBundleVersionChange, isDagVersionChange };
     });

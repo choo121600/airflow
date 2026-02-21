@@ -61,7 +61,15 @@ INNER_TASK_GROUP_SUB_TASK = "inner_task_group_sub_task"
 
 GRID_RUN_1 = {
     "dag_id": "test_dag",
-    "dag_version_number": 1,
+    "dag_versions": [
+        {
+            "version_number": 1,
+            "dag_id": "test_dag",
+            "bundle_name": "dag_maker",
+            "created_at": "2024-12-31T00:00:00Z",
+            "dag_display_name": "test_dag",
+        }
+    ],
     "duration": 283996800.0,
     "end_date": "2024-12-31T00:00:00Z",
     "has_missed_deadline": False,
@@ -74,7 +82,15 @@ GRID_RUN_1 = {
 
 GRID_RUN_2 = {
     "dag_id": "test_dag",
-    "dag_version_number": 1,
+    "dag_versions": [
+        {
+            "version_number": 1,
+            "dag_id": "test_dag",
+            "bundle_name": "dag_maker",
+            "created_at": "2024-12-31T00:00:00Z",
+            "dag_display_name": "test_dag",
+        }
+    ],
     "duration": 283996800.0,
     "end_date": "2024-12-31T00:00:00Z",
     "has_missed_deadline": False,
@@ -84,6 +100,18 @@ GRID_RUN_2 = {
     "start_date": "2016-01-01T00:00:00Z",
     "state": "failed",
 }
+
+
+def _strip_dag_version_ids(data):
+    """Strip dynamic `id` fields from dag_versions for deterministic comparison."""
+    if isinstance(data, list):
+        return [_strip_dag_version_ids(item) for item in data]
+    if isinstance(data, dict) and "dag_versions" in data:
+        result = dict(data)
+        result["dag_versions"] = [{k: v for k, v in dv.items() if k != "id"} for dv in result["dag_versions"]]
+        return result
+    return data
+
 
 GRID_NODES = [
     {
@@ -359,10 +387,10 @@ def _freeze_time_for_dagruns(time_machine):
 @pytest.mark.usefixtures("_freeze_time_for_dagruns")
 class TestGetGridDataEndpoint:
     def test_should_response_200(self, test_client):
-        with assert_queries_count(5):
+        with assert_queries_count(6):
             response = test_client.get(f"/grid/runs/{DAG_ID}")
         assert response.status_code == 200
-        assert response.json() == [
+        assert _strip_dag_version_ids(response.json()) == [
             GRID_RUN_1,
             GRID_RUN_2,
         ]
@@ -401,10 +429,10 @@ class TestGetGridDataEndpoint:
         ],
     )
     def test_should_response_200_order_by(self, test_client, order_by, expected):
-        with assert_queries_count(5):
+        with assert_queries_count(6):
             response = test_client.get(f"/grid/runs/{DAG_ID}", params={"order_by": order_by})
         assert response.status_code == 200
-        assert response.json() == expected
+        assert _strip_dag_version_ids(response.json()) == expected
 
     @pytest.mark.parametrize(
         ("limit", "expected"),
@@ -420,10 +448,10 @@ class TestGetGridDataEndpoint:
         ],
     )
     def test_should_response_200_limit(self, test_client, limit, expected):
-        with assert_queries_count(5):
+        with assert_queries_count(6):
             response = test_client.get(f"/grid/runs/{DAG_ID}", params={"limit": limit})
         assert response.status_code == 200
-        assert response.json() == expected
+        assert _strip_dag_version_ids(response.json()) == expected
 
     @pytest.mark.parametrize(
         ("params", "expected"),
@@ -445,13 +473,13 @@ class TestGetGridDataEndpoint:
         ],
     )
     def test_runs_should_response_200_date_filters(self, test_client, params, expected):
-        with assert_queries_count(5):
+        with assert_queries_count(6):
             response = test_client.get(
                 f"/grid/runs/{DAG_ID}",
                 params=params,
             )
         assert response.status_code == 200
-        assert response.json() == expected
+        assert _strip_dag_version_ids(response.json()) == expected
 
     @pytest.mark.parametrize(
         ("params", "expected", "expected_queries_count"),
@@ -607,10 +635,10 @@ class TestGetGridDataEndpoint:
 
     def test_get_grid_runs(self, session, test_client):
         session.commit()
-        with assert_queries_count(5):
+        with assert_queries_count(6):
             response = test_client.get(f"/grid/runs/{DAG_ID}?limit=5")
         assert response.status_code == 200
-        assert response.json() == [GRID_RUN_1, GRID_RUN_2]
+        assert _strip_dag_version_ids(response.json()) == [GRID_RUN_1, GRID_RUN_2]
 
     @pytest.mark.parametrize(
         ("endpoint", "run_type", "expected"),
@@ -625,7 +653,7 @@ class TestGetGridDataEndpoint:
         session.commit()
         response = test_client.get(f"/grid/{endpoint}/{DAG_ID}?run_type={run_type}")
         assert response.status_code == 200
-        assert response.json() == expected
+        assert _strip_dag_version_ids(response.json()) == expected
 
     @pytest.mark.parametrize(
         ("endpoint", "triggering_user", "expected"),
@@ -639,14 +667,14 @@ class TestGetGridDataEndpoint:
         session.commit()
         response = test_client.get(f"/grid/{endpoint}/{DAG_ID}?triggering_user={triggering_user}")
         assert response.status_code == 200
-        assert response.json() == expected
+        assert _strip_dag_version_ids(response.json()) == expected
 
     def test_get_grid_runs_filter_by_run_type_and_triggering_user(self, session, test_client):
         session.commit()
-        with assert_queries_count(5):
+        with assert_queries_count(6):
             response = test_client.get(f"/grid/runs/{DAG_ID}?run_type=manual&triggering_user=user2")
         assert response.status_code == 200
-        assert response.json() == [GRID_RUN_2]
+        assert _strip_dag_version_ids(response.json()) == [GRID_RUN_2]
 
     @pytest.mark.parametrize(
         ("endpoint", "state", "expected"),
@@ -662,7 +690,7 @@ class TestGetGridDataEndpoint:
         session.commit()
         response = test_client.get(f"/grid/{endpoint}/{DAG_ID}?state={state}")
         assert response.status_code == 200
-        assert response.json() == expected
+        assert _strip_dag_version_ids(response.json()) == expected
 
     def test_grid_ti_summaries_group(self, session, test_client):
         run_id = "run_4-1"

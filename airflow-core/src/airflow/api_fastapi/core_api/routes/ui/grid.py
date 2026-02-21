@@ -22,8 +22,8 @@ from typing import TYPE_CHECKING, Annotated, Any
 
 import structlog
 from fastapi import Depends, HTTPException, status
-from sqlalchemy import exists, func, select
-from sqlalchemy.orm import joinedload
+from sqlalchemy import exists, select
+from sqlalchemy.orm import joinedload, load_only, noload, selectinload
 
 from airflow.api_fastapi.auth.managers.models.resource_details import DagAccessEntity
 from airflow.api_fastapi.common.db.common import SessionDep, paginated_select
@@ -58,6 +58,7 @@ from airflow.api_fastapi.core_api.services.ui.task_group import (
     get_task_group_children_getter,
     task_group_to_dict_grid,
 )
+from airflow.models.dag import DagModel
 from airflow.models.dag_version import DagVersion
 from airflow.models.dagrun import DagRun
 from airflow.models.deadline import Deadline
@@ -282,34 +283,29 @@ def get_grid_runs(
         .correlate(DagRun)
         .label("has_missed_deadline")
     )
-    # get the highest dag_version_number from TIs for each run
-    latest_ti_version = (
-        select(
-            TaskInstance.run_id,
-            func.max(DagVersion.version_number).label("version_number"),
-        )
-        .join(DagVersion, TaskInstance.dag_version_id == DagVersion.id)
-        .where(TaskInstance.dag_id == dag_id)
-        .group_by(TaskInstance.run_id)
-        .subquery()
-    )
-
     base_query = (
-        select(
-            DagRun.dag_id,
-            DagRun.run_id,
-            DagRun.queued_at,
-            DagRun.start_date,
-            DagRun.end_date,
-            DagRun.run_after,
-            DagRun.state,
-            DagRun.run_type,
-            has_missed_deadline,
-            DagRun.bundle_version,
-            latest_ti_version.c.version_number.label("dag_version_number"),
-        )
-        .outerjoin(latest_ti_version, DagRun.run_id == latest_ti_version.c.run_id)
+        select(DagRun, has_missed_deadline)
         .where(DagRun.dag_id == dag_id)
+        .options(
+            load_only(
+                DagRun.dag_id,
+                DagRun.run_id,
+                DagRun.queued_at,
+                DagRun.start_date,
+                DagRun.end_date,
+                DagRun.run_after,
+                DagRun.state,
+                DagRun.run_type,
+                DagRun.bundle_version,
+            ),
+            joinedload(DagRun.dag_model).load_only(DagModel._dag_display_property_value),
+            joinedload(DagRun.created_dag_version).joinedload(DagVersion.bundle),
+            selectinload(DagRun.task_instances)
+            .load_only(TaskInstance.dag_version_id)
+            .joinedload(TaskInstance.dag_version)
+            .joinedload(DagVersion.bundle),
+            noload(DagRun.task_instances_histories),
+        )
     )
 
     # This comparison is to fall back to DAG timetable when no order_by is provided
@@ -327,8 +323,14 @@ def get_grid_runs(
         offset=offset,
         filters=[run_after, run_type, state, triggering_user],
         limit=limit,
+        return_total_entries=False,
     )
-    return [GridRunsResponse(**row._mapping) for row in session.execute(dag_runs_select_filter)]
+    results = session.execute(dag_runs_select_filter).unique().all()
+    grid_runs = []
+    for run, has_missed in results:
+        run.has_missed_deadline = has_missed
+        grid_runs.append(GridRunsResponse.model_validate(run, from_attributes=True))
+    return grid_runs
 
 
 @grid_router.get(

@@ -22,8 +22,16 @@ import { FiGitCommit } from "react-icons/fi";
 
 import { Tooltip } from "src/components/ui";
 
+import {
+  BUNDLE_VERSION_ICON_SIZE,
+  BUNDLE_VERSION_INDICATOR_LEFT,
+  BUNDLE_VERSION_INDICATOR_TOP,
+  DAG_VERSION_INDICATOR_HEIGHT,
+  VERSION_INDICATOR_Z_INDEX,
+} from "./constants";
+
 type BundleVersionIndicatorProps = {
-  readonly bundleVersion: string | undefined;
+  readonly bundleVersion: string | null | undefined;
 };
 
 export const BundleVersionIndicator = ({ bundleVersion }: BundleVersionIndicatorProps) => {
@@ -31,8 +39,14 @@ export const BundleVersionIndicator = ({ bundleVersion }: BundleVersionIndicator
 
   return (
     <Tooltip content={`${translate("versionDetails.bundleVersion")}: ${bundleVersion}`}>
-      <Box color="orange.focusRing" left={-2} position="absolute" top={93} zIndex={1}>
-        <FiGitCommit size={15} />
+      <Box
+        color="orange.focusRing"
+        left={BUNDLE_VERSION_INDICATOR_LEFT}
+        position="absolute"
+        top={BUNDLE_VERSION_INDICATOR_TOP}
+        zIndex={VERSION_INDICATOR_Z_INDEX}
+      >
+        <FiGitCommit size={BUNDLE_VERSION_ICON_SIZE} />
       </Box>
     </Tooltip>
   );
@@ -47,7 +61,7 @@ const CONTAINER_STYLES = {
     width: 4.5,
   },
   vertical: {
-    height: 104,
+    height: DAG_VERSION_INDICATOR_HEIGHT,
     left: -1.25,
     top: -1.5,
     width: 0.5,
@@ -89,7 +103,7 @@ export const DagVersionIndicator = ({
       aria-label={`Version ${dagVersionNumber} indicator`}
       as="output"
       position="absolute"
-      zIndex={1}
+      zIndex={VERSION_INDICATOR_Z_INDEX}
       {...currentContainerStyle}
     >
       <Box
@@ -100,7 +114,10 @@ export const DagVersionIndicator = ({
       />
 
       <Tooltip
+        closeDelay={0}
         content={`v${dagVersionNumber ?? ""}`}
+        openDelay={0}
+        portalled
         positioning={{
           placement: isVertical ? "top" : "right",
         }}
@@ -114,6 +131,7 @@ export const DagVersionIndicator = ({
           borderRadius="full"
           position="absolute"
           transition="all 0.2s ease-in-out"
+          zIndex="tooltip"
           {...currentCircleStyle}
         />
       </Tooltip>

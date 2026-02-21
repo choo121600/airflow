@@ -25,9 +25,12 @@ import { useHover } from "src/context/hover";
 
 import { GridButton } from "./GridButton";
 import { BundleVersionIndicator, DagVersionIndicator } from "./VersionIndicator";
-import type { GridRunWithVersionFlags } from "./useGridRunsWithVersionFlags";
-
-const BAR_HEIGHT = 100;
+import { BAR_HEIGHT } from "./constants";
+import {
+  getBundleVersion,
+  getMaxVersionNumber,
+  type GridRunWithVersionFlags,
+} from "./useGridRunsWithVersionFlags";
 
 type Props = {
   readonly max: number;
@@ -59,12 +62,12 @@ export const Bar = ({ max, onClick, run, showVersionIndicatorMode }: Props) => {
       {run.isBundleVersionChange &&
       (showVersionIndicatorMode === VersionIndicatorOptions.BUNDLE_VERSION ||
         showVersionIndicatorMode === VersionIndicatorOptions.ALL) ? (
-        <BundleVersionIndicator bundleVersion={run.bundle_version ?? undefined} />
+        <BundleVersionIndicator bundleVersion={getBundleVersion(run)} />
       ) : undefined}
       {run.isDagVersionChange &&
       (showVersionIndicatorMode === VersionIndicatorOptions.DAG_VERSION ||
         showVersionIndicatorMode === VersionIndicatorOptions.ALL) ? (
-        <DagVersionIndicator dagVersionNumber={run.dag_version_number ?? undefined} orientation="vertical" />
+        <DagVersionIndicator dagVersionNumber={getMaxVersionNumber(run)} orientation="vertical" />
       ) : undefined}
 
       <Flex
