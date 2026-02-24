@@ -23,7 +23,7 @@ from typing import TYPE_CHECKING, Annotated, Any
 import structlog
 from fastapi import Depends, HTTPException, status
 from sqlalchemy import exists, select
-from sqlalchemy.orm import joinedload, load_only, noload, selectinload
+from sqlalchemy.orm import joinedload, load_only, selectinload
 
 from airflow.api_fastapi.auth.managers.models.resource_details import DagAccessEntity
 from airflow.api_fastapi.common.db.common import SessionDep, paginated_select
@@ -64,6 +64,7 @@ from airflow.models.dagrun import DagRun
 from airflow.models.deadline import Deadline
 from airflow.models.serialized_dag import SerializedDagModel
 from airflow.models.taskinstance import TaskInstance
+from airflow.models.taskinstancehistory import TaskInstanceHistory
 
 log = structlog.get_logger(logger_name=__name__)
 grid_router = AirflowRouter(prefix="/grid", tags=["Grid"])
@@ -304,7 +305,10 @@ def get_grid_runs(
             .load_only(TaskInstance.dag_version_id)
             .joinedload(TaskInstance.dag_version)
             .joinedload(DagVersion.bundle),
-            noload(DagRun.task_instances_histories),
+            selectinload(DagRun.task_instances_histories)
+            .load_only(TaskInstanceHistory.dag_version_id)
+            .joinedload(TaskInstanceHistory.dag_version)
+            .joinedload(DagVersion.bundle),
         )
     )
 
