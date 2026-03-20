@@ -16,43 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { chromium, firefox, webkit, type FullConfig } from "@playwright/test";
+import { test as setup } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 
 import { AUTH_FILE, testConfig } from "../../playwright.config";
 import { LoginPage } from "./pages/LoginPage";
 
-const browsers = { chromium, firefox, webkit };
-
-/**
- * Authenticate once before all tests and save state for reuse
- */
-async function globalSetup(config: FullConfig) {
-  const [firstProject] = config.projects as [FullConfig["projects"][number]];
-  const baseURL = firstProject.use.baseURL ?? "http://localhost:28080";
-  const { password, username } = testConfig.credentials;
-  const browserName = firstProject.name as keyof typeof browsers;
-  const browserType = browsers[browserName];
-
+setup("authenticate", async ({ page }) => {
   const authDir = path.dirname(AUTH_FILE);
 
   if (!fs.existsSync(authDir)) {
     fs.mkdirSync(authDir, { recursive: true });
   }
 
-  const browser = await browserType.launch();
-  const context = await browser.newContext({ baseURL });
-  const page = await context.newPage();
+  const { password, username } = testConfig.credentials;
+  const loginPage = new LoginPage(page);
 
-  try {
-    const loginPage = new LoginPage(page);
-
-    await loginPage.navigateAndLogin(username, password);
-    await context.storageState({ path: AUTH_FILE });
-  } finally {
-    await browser.close();
-  }
-}
-
-export default globalSetup;
+  await loginPage.navigateAndLogin(username, password);
+  await page.context().storageState({ path: AUTH_FILE });
+});

@@ -54,9 +54,14 @@ export default defineConfig({
   },
   forbidOnly: process.env.CI !== undefined && process.env.CI !== "",
   fullyParallel: true,
-  globalSetup: "./tests/e2e/global-setup.ts",
   projects: [
     {
+      name: "setup",
+      testDir: "./tests/e2e",
+      testMatch: /.*\.setup\.ts/u,
+    },
+    {
+      dependencies: ["setup"],
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
@@ -74,6 +79,7 @@ export default defineConfig({
       },
     },
     {
+      dependencies: ["setup"],
       name: "firefox",
       use: {
         ...devices["Desktop Firefox"],
@@ -90,6 +96,7 @@ export default defineConfig({
       },
     },
     {
+      dependencies: ["setup"],
       name: "webkit",
       use: {
         ...devices["Desktop Safari"],
