@@ -69,13 +69,15 @@ export class DagCalendarTab extends BasePage {
     for (let i = 0; i < count; i++) {
       const cell = this.activeCells.nth(i);
 
+      // Firefox sometimes fails to trigger tooltips on hover.
+      // Retry the hover + tooltip visibility check to handle this.
       let text = "";
 
       await expect(async () => {
         await cell.hover({ force: true });
         await expect(this.tooltip).toBeVisible({ timeout: 3000 });
         text = ((await this.tooltip.textContent()) ?? "").toLowerCase();
-      }).toPass({ intervals: [500], timeout: 20_000 });
+      }).toPass({ intervals: [1000], timeout: 20_000 });
 
       if (text.includes("success")) states.push("success");
       if (text.includes("failed")) states.push("failed");
@@ -87,8 +89,8 @@ export class DagCalendarTab extends BasePage {
 
   public async navigateToCalendar(dagId: string) {
     await expect(async () => {
-      await this.safeGoto(`/dags/${dagId}/calendar`);
-      await this.page.getByTestId("dag-calendar-root").waitFor({ state: "visible", timeout: 5000 });
+      await this.page.goto(`/dags/${dagId}/calendar`);
+      await expect(this.page.getByTestId("dag-calendar-root")).toBeVisible({ timeout: 10_000 });
     }).toPass({ intervals: [2000], timeout: 60_000 });
     await this.waitForCalendarReady();
   }
@@ -99,35 +101,19 @@ export class DagCalendarTab extends BasePage {
 
   public async switchToHourly() {
     await this.hourlyToggle.click();
-
-    await this.page.getByTestId("calendar-hourly-view").waitFor({ state: "visible", timeout: 30_000 });
+    await expect(this.page.getByTestId("calendar-hourly-view")).toBeVisible({ timeout: 30_000 });
+    await this.waitForCalendarReady();
   }
 
   public async switchToTotalView() {
     await this.totalToggle.click();
   }
 
-  public async verifyMonthGridRendered() {
-    await this.waitForCalendarReady();
-  }
-
-  private async waitForCalendarReady(): Promise<void> {
-    await this.page.getByTestId("dag-calendar-root").waitFor({ state: "visible", timeout: 120_000 });
-
-    await this.page.getByTestId("calendar-current-period").waitFor({ state: "visible", timeout: 120_000 });
-
-    const overlay = this.page.getByTestId("calendar-loading-overlay");
-
-    if (await overlay.isVisible().catch(() => false)) {
-      await overlay.waitFor({ state: "hidden", timeout: 120_000 });
-    }
-
-    await this.page.getByTestId("calendar-grid").waitFor({ state: "visible", timeout: 120_000 });
-
-    await this.page.waitForFunction(() => {
-      const cells = document.querySelectorAll('[data-testid="calendar-cell"]');
-
-      return cells.length > 0;
-    });
+  public async waitForCalendarReady(): Promise<void> {
+    await expect(this.page.getByTestId("dag-calendar-root")).toBeVisible({ timeout: 60_000 });
+    await expect(this.page.getByTestId("calendar-current-period")).toBeVisible({ timeout: 60_000 });
+    await expect(this.page.getByTestId("calendar-loading-overlay")).toBeHidden({ timeout: 60_000 });
+    await expect(this.page.getByTestId("calendar-grid")).toBeVisible({ timeout: 60_000 });
+    await expect(this.page.getByTestId("calendar-cell").first()).toBeVisible({ timeout: 30_000 });
   }
 }

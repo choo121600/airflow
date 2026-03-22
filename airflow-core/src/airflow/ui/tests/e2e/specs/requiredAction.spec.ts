@@ -16,45 +16,177 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { expect, test } from "@playwright/test";
-import { AUTH_FILE, testConfig } from "playwright.config";
-
-import { RequiredActionsPage } from "../pages/RequiredActionsPage";
+import { testConfig } from "playwright.config";
+import { expect, test as baseTest } from "tests/e2e/fixtures";
+import {
+  apiDeleteDagRun,
+  apiRespondToHITL,
+  apiTriggerDagRun,
+  setupHITLFlowViaAPI,
+  waitForDagReady,
+  waitForTaskInstanceState,
+} from "tests/e2e/utils/test-helpers";
 
 const hitlDagId = testConfig.testDag.hitlId;
 
+/**
+ * Worker-scoped fixture that tracks HITL DAG run IDs and guarantees cleanup.
+ * Replaces the module-level `createdRunIds` array which was not shared across workers.
+ */
+/* eslint-disable react-hooks/rules-of-hooks -- Playwright's `use` is not a React Hook. */
+const test = baseTest.extend<{ hitlRunTracker: { track: (runId: string) => void } }>({
+  hitlRunTracker: async ({ authenticatedRequest }, use) => {
+    const trackedRunIds: Array<string> = [];
+
+    await use({ track: (runId: string) => trackedRunIds.push(runId) });
+
+    for (const runId of trackedRunIds) {
+      await apiDeleteDagRun(authenticatedRequest, hitlDagId, runId).catch(() => undefined);
+    }
+  },
+});
+
+const beforeAllRunIds: Array<string> = [];
+
 test.describe("Verify Required Action page", () => {
   test.describe.configure({ mode: "serial" });
+  test.slow();
 
-  test.beforeAll(async ({ browser }) => {
-    test.setTimeout(400_000);
+  test.beforeAll(async ({ authenticatedRequest }) => {
+    test.setTimeout(600_000);
 
-    const context = await browser.newContext({ storageState: AUTH_FILE });
-
-    const page = await context.newPage();
-    const requiredActionsPage = new RequiredActionsPage(page);
-
-    await requiredActionsPage.runHITLFlowWithApproval(hitlDagId);
-    await requiredActionsPage.runHITLFlowWithRejection(hitlDagId);
-
-    await context.close();
+    beforeAllRunIds.push(await setupHITLFlowViaAPI(authenticatedRequest, hitlDagId, true));
+    beforeAllRunIds.push(await setupHITLFlowViaAPI(authenticatedRequest, hitlDagId, false));
   });
 
-  test.fixme("Verify the actions list/table is displayed (or empty state if none)", async ({ page }) => {
-    const browsePage = new RequiredActionsPage(page);
+  test.afterAll(async ({ authenticatedRequest }) => {
+    for (const runId of beforeAllRunIds) {
+      await apiDeleteDagRun(authenticatedRequest, hitlDagId, runId).catch(() => undefined);
+    }
+  });
 
-    await browsePage.navigateToRequiredActionsPage();
+  test("Verify the actions list/table is displayed (or empty state if none)", async ({
+    page,
+    requiredActionsPage,
+  }) => {
+    await requiredActionsPage.navigateToRequiredActionsPage();
 
-    await expect(browsePage.actionsTable.or(browsePage.emptyStateMessage)).toBeVisible();
+    await expect(requiredActionsPage.actionsTable.or(requiredActionsPage.emptyStateMessage)).toBeVisible();
 
-    if (await browsePage.actionsTable.isVisible()) {
+    if (await requiredActionsPage.actionsTable.isVisible()) {
       await expect(page.locator("th").filter({ hasText: "Dag ID" })).toBeVisible();
       await expect(page.locator("th").filter({ hasText: "Task ID" })).toBeVisible();
       await expect(page.locator("th").filter({ hasText: "Dag Run ID" })).toBeVisible();
       await expect(page.locator("th").filter({ hasText: "Response created at" })).toBeVisible();
       await expect(page.locator("th").filter({ hasText: "Response received at" })).toBeVisible();
     } else {
-      await expect(browsePage.emptyStateMessage).toBeVisible();
+      await expect(requiredActionsPage.emptyStateMessage).toBeVisible();
     }
+  });
+
+  test("Verify HITL approval UI interaction flow", async ({ authenticatedRequest, hitlRunTracker, page }) => {
+    test.setTimeout(300_000);
+
+    await waitForDagReady(authenticatedRequest, hitlDagId);
+    await authenticatedRequest.patch(`/api/v2/dags/${hitlDagId}`, { data: { is_paused: false } });
+
+    const { dagRunId } = await apiTriggerDagRun(authenticatedRequest, hitlDagId);
+
+    hitlRunTracker.track(dagRunId);
+
+    await waitForTaskInstanceState(authenticatedRequest, {
+      dagId: hitlDagId,
+      expectedState: "success",
+      runId: dagRunId,
+      taskId: "wait_for_default_option",
+    });
+
+    await waitForTaskInstanceState(authenticatedRequest, {
+      dagId: hitlDagId,
+      expectedState: "deferred",
+      runId: dagRunId,
+      taskId: "wait_for_input",
+    });
+    await apiRespondToHITL(authenticatedRequest, {
+      chosenOptions: ["OK"],
+      dagId: hitlDagId,
+      paramsInput: { information: "test" },
+      runId: dagRunId,
+      taskId: "wait_for_input",
+    });
+
+    await waitForTaskInstanceState(authenticatedRequest, {
+      dagId: hitlDagId,
+      expectedState: "deferred",
+      runId: dagRunId,
+      taskId: "wait_for_option",
+    });
+    await apiRespondToHITL(authenticatedRequest, {
+      chosenOptions: ["option 1"],
+      dagId: hitlDagId,
+      runId: dagRunId,
+      taskId: "wait_for_option",
+    });
+
+    await waitForTaskInstanceState(authenticatedRequest, {
+      dagId: hitlDagId,
+      expectedState: "deferred",
+      runId: dagRunId,
+      taskId: "wait_for_multiple_options",
+    });
+    await apiRespondToHITL(authenticatedRequest, {
+      chosenOptions: ["option 4", "option 5"],
+      dagId: hitlDagId,
+      runId: dagRunId,
+      taskId: "wait_for_multiple_options",
+    });
+
+    // Wait for the approval task to become deferred — this is what we test via UI.
+    await waitForTaskInstanceState(authenticatedRequest, {
+      dagId: hitlDagId,
+      expectedState: "deferred",
+      runId: dagRunId,
+      taskId: "valid_input_and_options",
+    });
+
+    await page.goto(`/dags/${hitlDagId}/runs/${dagRunId}/tasks/valid_input_and_options/required_actions`);
+
+    const approveButton = page.getByTestId("hitl-option-Approve");
+
+    await expect(approveButton).toBeVisible({ timeout: 30_000 });
+    await expect(approveButton).toBeEnabled({ timeout: 10_000 });
+    await approveButton.click();
+
+    await expect
+      .poll(
+        async () => {
+          try {
+            const response = await authenticatedRequest.get(
+              `/api/v2/dags/${hitlDagId}/dagRuns/${dagRunId}/taskInstances/valid_input_and_options/-1/hitlDetails`,
+              { timeout: 10_000 },
+            );
+
+            if (!response.ok()) {
+              return false;
+            }
+
+            const data = (await response.json()) as { response_received: boolean };
+
+            return data.response_received;
+          } catch {
+            return false;
+          }
+        },
+        { intervals: [2000, 5000], message: "HITL response was not recorded", timeout: 60_000 },
+      )
+      .toBe(true);
+
+    await waitForTaskInstanceState(authenticatedRequest, {
+      dagId: hitlDagId,
+      expectedState: "success",
+      runId: dagRunId,
+      taskId: "valid_input_and_options",
+      timeout: 60_000,
+    });
   });
 });
