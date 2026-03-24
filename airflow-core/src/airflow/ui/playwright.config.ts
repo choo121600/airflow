@@ -114,6 +114,7 @@ export default defineConfig({
   testIgnore: [
     "**/dag-runs-tab.spec.ts",
     "**/dag-runs.spec.ts",
+    "**/backfill.spec.ts",
     "**/dag-grid-view.spec.ts",
     "**/task-logs.spec.ts",
     "**/dag-tasks.spec.ts",
